@@ -43,9 +43,6 @@
 `define FUNCT_BGEZ       5'b00001
 `define FUNCT_BGEZAL     5'b10001
 
-// FROM MEM
-`define FUNCT_L        6'b100011
-`define FUNCT_LU        6'b001111
 
 // NOTE: improper usage
 // it's NOP because '111111' is meaningless in current MIPS ISA

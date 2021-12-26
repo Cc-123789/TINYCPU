@@ -144,7 +144,7 @@ module Core(
     .operand_2_out          (idex_operand_2),
     .mem_read_flag_out      (idex_mem_read_flag),
     .mem_write_flag_out     (idex_mem_write_flag),
-    .mem_ext_flag_out  (idex_mem_ext_flag),
+    .mem_ext_flag_out       (idex_mem_ext_flag),
     .mem_sel_out            (idex_mem_sel),
     .mem_write_data_out     (idex_mem_write_data),
     .reg_write_en_out       (idex_reg_write_en),
@@ -171,7 +171,7 @@ module Core(
     .operand_2              (idex_operand_2),
     .mem_read_flag_in       (idex_mem_read_flag),
     .mem_write_flag_in      (idex_mem_write_flag),
-    .mem_ext_flag_in   (idex_mem_ext_flag),
+    .mem_ext_flag_in        (idex_mem_ext_flag),
     .mem_sel_in             (idex_mem_sel),
     .mem_write_data_in      (idex_mem_write_data),
     .reg_write_en_in        (idex_reg_write_en),
@@ -182,7 +182,7 @@ module Core(
 
     .mem_read_flag_out      (ex_mem_read_flag),
     .mem_write_flag_out     (ex_mem_write_flag),
-    .mem_ext_flag_out  (ex_mem_ext_flag),
+    .mem_ext_flag_out       (ex_mem_ext_flag),
     .mem_sel_out            (ex_mem_sel),
     .mem_write_data_out     (ex_mem_write_data),
 
@@ -200,7 +200,7 @@ module Core(
 
     .mem_read_flag_in       (ex_mem_read_flag),
     .mem_write_flag_in      (ex_mem_write_flag),
-    .mem_ext_flag_in   (ex_mem_ext_flag),
+    .mem_ext_flag_in        (ex_mem_ext_flag),
     .mem_sel_in             (ex_mem_sel),
     .mem_write_data_in      (ex_mem_write_data),
     .result_in              (ex_result),
@@ -210,7 +210,7 @@ module Core(
 
     .mem_read_flag_out      (exmem_mem_read_flag),
     .mem_write_flag_out     (exmem_mem_write_flag),
-    .mem_ext_flag_out  (exmem_mem_ext_flag),
+    .mem_ext_flag_out       (exmem_mem_ext_flag),
     .mem_sel_out            (exmem_mem_sel),
     .mem_write_data_out     (exmem_mem_write_data),
     .result_out             (exmem_result),

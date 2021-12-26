@@ -17,9 +17,9 @@ module FunctGen(
       `OP_LUI,`OP_ORI: funct <= `FUNCT_OR;
       `OP_XORI: funct <= `FUNCT_XOR;
       `OP_ANDI: funct <= `FUNCT_AND;
-      `OP_LB, `OP_LH, `OP_LW : funt <= `FUNCT_L;
-      `OP_LBU, `OP_LHU, : funt <= `FUNCT_LU;
-      `OP_SB, `OP_SW, `OP_ADDIU, `OP_ADDI: funct <= `FUNCT_ADDU;
+      `OP_SB, `OP_SW, `OP_ADDIU, `OP_ADDI
+      `OP_LBU, `OP_LHU, 
+      `OP_LB, `OP_LH, `OP_LW : funct <= `FUNCT_ADDU;
       `OP_JAL,`OP_J,`OP_BEQ,`OP_BNE,`OP_BGTZ,`OP_BLEZ,`OP_REGIMM: funct <= `FUNCT_OR;
       default: funct <= `FUNCT_NOP;
     endcase

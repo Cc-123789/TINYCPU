@@ -43,6 +43,26 @@ module WB(
           2'b11: result_out <= mem_ext_flag ? {{24{ram_read_data[31]}}, ram_read_data[31:24]} : {24'b0, ram_read_data[31:24]};
         endcase
       end
+      else if (mem_sel == 4'b1001) begin//LBU
+        case (address[1:0])
+          2'b00: result_out <= {24'b0, ram_read_data[7:0]};
+          2'b01: result_out <= {24'b0, ram_read_data[15:8]};
+          2'b10: result_out <= {24'b0, ram_read_data[23:16]};
+          2'b11: result_out <= {24'b0, ram_read_data[31:24]};
+        endcase
+      end
+      else if (mem_sel == 4'b0011) begin
+        case (address[1:0])
+          2'b00: result_out <= mem_ext_flag ? {{16{ram_read_data[15]}}, ram_read_data[15:0]} : {16'b0, ram_read_data[15:0]};
+          2'b10: result_out <= mem_ext_flag ? {{16{ram_read_data[31]}}, ram_read_data[31:16]} : {16'b0, ram_read_data[31:16]};
+        endcase
+      end
+      else if (mem_sel == 4'b1011) begin//LHU
+        case (address[1:0])
+          2'b00: result_out <= {16'b0, ram_read_data[15:0]};
+          2'b10: result_out <= {16'b0, ram_read_data[31:16]};
+        endcase
+      end
       else if (mem_sel == 4'b1111) begin
         case (address[1:0])
           2'b00: result_out <= ram_read_data;
