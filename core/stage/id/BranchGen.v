@@ -22,7 +22,7 @@ module BranchGen(
 
   always @(*) begin
     case (op)
-      `OP_JAL: begin
+      `OP_JAL, `OP_J: begin
         branch_flag <= 1;
         branch_addr <= { addr_plus_4[31:28], jump_addr, 2'b00};
       end
@@ -76,7 +76,7 @@ module BranchGen(
           branch_addr <= 0;
         end
       end
-      `OP_BLEZ: begin
+      `OP_REGIMM: begin
         case(seg)
           `FUNCT_BLTZ,`FUNCT_BLTZAL:begin
             if (reg_data_1 < reg_data_2) begin

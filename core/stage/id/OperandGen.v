@@ -28,10 +28,11 @@ module OperandGen(
       // immediate
       `OP_ADDIU, `OP_ADDI,
       `OP_ORI,`OP_LUI,
-      `OP_XORI,
-      `OP_ANDI,
+      `OP_XORI,`OP_ANDI,
       // memory accessing
-      `OP_LB,`OP_LH,`OP_LW,`OP_LBU,`OP_LHU,`OP_SB,`OP_SH,`OP_SW,`OP_LWL,`OP_LWR,`OP_SWL,`OP_SWR,
+      `OP_LB,`OP_LH,`OP_LW,`OP_LBU,`OP_LHU,
+      `OP_SB,`OP_SH,`OP_SW,
+      `OP_LWL,`OP_LWR,`OP_SWL,`OP_SWR,
       // branch
       `OP_BNE,`OP_BEQ,`OP_BGTZ,`OP_BLEZ,`OP_REGIMM
       :begin
@@ -61,7 +62,9 @@ module OperandGen(
       // arithmetic & logic (immediate)
       `OP_ADDIU,`OP_ADDI,
       // memory accessing
-      `OP_LB,`OP_LH,`OP_LW,`OP_LBU,`OP_LHU,`OP_SB,`OP_SH,`OP_SW,`OP_LWL,`OP_LWR,`OP_SWL,`OP_SWR,
+      `OP_LB,`OP_LH,`OP_LW,`OP_LBU,`OP_LHU,
+      `OP_SB,`OP_SH,`OP_SW,
+      `OP_LWL,`OP_LWR,`OP_SWL,`OP_SWR,
       : begin
         operand_2 <= sign_ext_imm;
       end
