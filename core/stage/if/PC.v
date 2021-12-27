@@ -27,7 +27,7 @@ module PC(
   assign rom_write_data = 0;
 
   always @(posedge clk) begin
-    rom_en <= !rst;
+    rom_en = !rst;
   end
 
   always @(posedge clk) begin
