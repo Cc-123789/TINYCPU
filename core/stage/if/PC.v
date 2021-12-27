@@ -30,7 +30,7 @@ module PC(
     rom_en = !rst;
   end
 
-  always @(posedge clk) begin
+  always @(posedge clk) begin      
     if (!rom_en) begin
       pc <= `INIT_PC - 4;
     end
