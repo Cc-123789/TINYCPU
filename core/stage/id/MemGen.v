@@ -8,7 +8,7 @@ module MemGen(
   input       [`DATA_BUS]     reg_data_2,
   output  reg                 mem_read_flag,
   output  reg                 mem_write_flag,
-  output  reg                 mem_ext_flag,
+  output  reg                 mem_sign_flag,
   output  reg [`MEM_SEL_BUS]  mem_sel,
   output  reg [`DATA_BUS]     mem_write_data
 );
@@ -30,18 +30,16 @@ module MemGen(
   
   always @(*) begin
     case (op)
-      `OP_LB, `OP_LBU, `OP_LH, `OP_LHU: mem_ext_flag <= 1;
-      default: mem_ext_flag <= 0;
+      `OP_LB, `OP_LH,: mem_sign_flag <= 1;
+      default: mem_sign_flag <= 0;
     endcase
   end
 
   // mem_sel: lb & sb -> 1, lw & sw -> 1111
   always @(*) begin
     case (op)
-      `OP_LB,  `OP_SB: mem_sel <= 4'b0001;
-      `OP_LBU: mem_sel <= 4'b1001;
-      `OP_LHU: mem_sel <= 4'b1011;
-      `OP_SH, `OP_LH: mem_sel <= 4'b0011;
+      `OP_LB, `OP_LBU， `OP_SB: mem_sel <= 4'b0001;
+      `OP_SH, `OP_LHU，`OP_LH: mem_sel <= 4'b0011;
       `OP_LW, `OP_SW: mem_sel <= 4'b1111;
       default: mem_sel <= 4'b0000;
     endcase

@@ -75,8 +75,8 @@ module Core(
   wire[`SHAMT_BUS] id_shamt, idex_shamt;
   wire[`DATA_BUS] id_operand_1, id_operand_2;
   wire[`DATA_BUS] idex_operand_1, idex_operand_2;
-  wire id_mem_read_flag, id_mem_write_flag, id_mem_ext_flag;
-  wire idex_mem_read_flag, idex_mem_write_flag, idex_mem_ext_flag;
+  wire id_mem_read_flag, id_mem_write_flag, id_mem_sign_flag;
+  wire idex_mem_read_flag, idex_mem_write_flag, idex_mem_sign_flag;
   wire[`MEM_SEL_BUS] id_mem_sel, idex_mem_sel;
   wire[`DATA_BUS] id_mem_write_data, idex_mem_write_data;
   wire id_reg_write_en, idex_reg_write_en;
@@ -109,7 +109,7 @@ module Core(
 
     .mem_read_flag      (id_mem_read_flag),
     .mem_write_flag     (id_mem_write_flag),
-    .mem_ext_flag  (id_mem_ext_flag),
+    .mem_sign_flag  (id_mem_sign_flag),
     .mem_sel            (id_mem_sel),
     .mem_write_data     (id_mem_write_data),
 
@@ -131,7 +131,7 @@ module Core(
     .operand_2_in           (id_operand_2),
     .mem_read_flag_in       (id_mem_read_flag),
     .mem_write_flag_in      (id_mem_write_flag),
-    .mem_ext_flag_in   (id_mem_ext_flag),
+    .mem_sign_flag_in   (id_mem_sign_flag),
     .mem_sel_in             (id_mem_sel),
     .mem_write_data_in      (id_mem_write_data),
     .reg_write_en_in        (id_reg_write_en),
@@ -144,7 +144,7 @@ module Core(
     .operand_2_out          (idex_operand_2),
     .mem_read_flag_out      (idex_mem_read_flag),
     .mem_write_flag_out     (idex_mem_write_flag),
-    .mem_ext_flag_out       (idex_mem_ext_flag),
+    .mem_sign_flag_out       (idex_mem_sign_flag),
     .mem_sel_out            (idex_mem_sel),
     .mem_write_data_out     (idex_mem_write_data),
     .reg_write_en_out       (idex_reg_write_en),
@@ -155,8 +155,8 @@ module Core(
 
   // EX stage
   wire ex_ex_load_flag;
-  wire ex_mem_read_flag, ex_mem_write_flag, ex_mem_ext_flag;
-  wire exmem_mem_read_flag, exmem_mem_write_flag, exmem_mem_ext_flag;
+  wire ex_mem_read_flag, ex_mem_write_flag, ex_mem_sign_flag;
+  wire exmem_mem_read_flag, exmem_mem_write_flag, exmem_mem_sign_flag;
   wire[`MEM_SEL_BUS] ex_mem_sel, exmem_mem_sel;
   wire[`DATA_BUS] ex_mem_write_data, ex_result;
   wire[`DATA_BUS] exmem_mem_write_data, exmem_result;
@@ -171,7 +171,7 @@ module Core(
     .operand_2              (idex_operand_2),
     .mem_read_flag_in       (idex_mem_read_flag),
     .mem_write_flag_in      (idex_mem_write_flag),
-    .mem_ext_flag_in        (idex_mem_ext_flag),
+    .mem_sign_flag_in        (idex_mem_sign_flag),
     .mem_sel_in             (idex_mem_sel),
     .mem_write_data_in      (idex_mem_write_data),
     .reg_write_en_in        (idex_reg_write_en),
@@ -182,7 +182,7 @@ module Core(
 
     .mem_read_flag_out      (ex_mem_read_flag),
     .mem_write_flag_out     (ex_mem_write_flag),
-    .mem_ext_flag_out       (ex_mem_ext_flag),
+    .mem_sign_flag_out       (ex_mem_sign_flag),
     .mem_sel_out            (ex_mem_sel),
     .mem_write_data_out     (ex_mem_write_data),
 
@@ -200,7 +200,7 @@ module Core(
 
     .mem_read_flag_in       (ex_mem_read_flag),
     .mem_write_flag_in      (ex_mem_write_flag),
-    .mem_ext_flag_in        (ex_mem_ext_flag),
+    .mem_sign_flag_in        (ex_mem_sign_flag),
     .mem_sel_in             (ex_mem_sel),
     .mem_write_data_in      (ex_mem_write_data),
     .result_in              (ex_result),
@@ -210,7 +210,7 @@ module Core(
 
     .mem_read_flag_out      (exmem_mem_read_flag),
     .mem_write_flag_out     (exmem_mem_write_flag),
-    .mem_ext_flag_out       (exmem_mem_ext_flag),
+    .mem_sign_flag_out       (exmem_mem_sign_flag),
     .mem_sel_out            (exmem_mem_sel),
     .mem_write_data_out     (exmem_mem_write_data),
     .result_out             (exmem_result),
@@ -222,8 +222,8 @@ module Core(
 
   // MEM stage
   wire mem_mem_load_flag;
-  wire mem_mem_read_flag, mem_mem_write_flag, mem_mem_ext_flag;
-  wire memwb_mem_read_flag, memwb_mem_write_flag, memwb_mem_ext_flag;
+  wire mem_mem_read_flag, mem_mem_write_flag, mem_mem_sign_flag;
+  wire memwb_mem_read_flag, memwb_mem_write_flag, memwb_mem_sign_flag;
   wire[`MEM_SEL_BUS] mem_mem_sel, memwb_mem_sel;
   wire[`DATA_BUS] mem_result, memwb_result, memwb_ram_read_data;
   wire mem_reg_write_en, memwb_reg_write_en;
@@ -233,7 +233,7 @@ module Core(
   MEM mem_stage(
     .mem_read_flag_in       (exmem_mem_read_flag),
     .mem_write_flag_in      (exmem_mem_write_flag),
-    .mem_ext_flag_in   (exmem_mem_ext_flag),
+    .mem_sign_flag_in   (exmem_mem_sign_flag),
     .mem_sel_in             (exmem_mem_sel),
     .mem_write_data         (exmem_mem_write_data),
 
@@ -251,7 +251,7 @@ module Core(
 
     .mem_read_flag_out      (mem_mem_read_flag),
     .mem_write_flag_out     (mem_mem_write_flag),
-    .mem_ext_flag_out  (mem_mem_ext_flag),
+    .mem_sign_flag_out  (mem_mem_sign_flag),
     .mem_sel_out            (mem_mem_sel),
     .result_out             (mem_result),
     .reg_write_en_out       (mem_reg_write_en),
@@ -269,7 +269,7 @@ module Core(
 
     .mem_read_flag_in       (mem_mem_read_flag),
     .mem_write_flag_in      (mem_mem_write_flag),
-    .mem_ext_flag_in   (mem_mem_ext_flag),
+    .mem_sign_flag_in   (mem_mem_sign_flag),
     .mem_sel_in             (mem_mem_sel),
     .result_in              (mem_result),
     .reg_write_en_in        (mem_reg_write_en),
@@ -280,7 +280,7 @@ module Core(
 
     .mem_read_flag_out      (memwb_mem_read_flag),
     .mem_write_flag_out     (memwb_mem_write_flag),
-    .mem_ext_flag_out  (memwb_mem_ext_flag),
+    .mem_sign_flag_out  (memwb_mem_sign_flag),
     .mem_sel_out            (memwb_mem_sel),
     .result_out             (memwb_result),
     .reg_write_en_out       (memwb_reg_write_en),
@@ -302,7 +302,7 @@ module Core(
 
     .mem_read_flag      (memwb_mem_read_flag),
     .mem_write_flag     (memwb_mem_write_flag),
-    .mem_ext_flag  (memwb_mem_ext_flag),
+    .mem_sign_flag  (memwb_mem_sign_flag),
     .mem_sel            (memwb_mem_sel),
 
     .result_in          (memwb_result),

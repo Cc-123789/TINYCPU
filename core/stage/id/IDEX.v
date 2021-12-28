@@ -14,7 +14,7 @@ module IDEX(
   input   [`DATA_BUS]     operand_2_in,
   input                   mem_read_flag_in,
   input                   mem_write_flag_in,
-  input                   mem_ext_flag_in,
+  input                   mem_sign_flag_in,
   input   [`MEM_SEL_BUS]  mem_sel_in,
   input   [`DATA_BUS]     mem_write_data_in,
   input                   reg_write_en_in,
@@ -27,7 +27,7 @@ module IDEX(
   output  [`DATA_BUS]     operand_2_out,
   output                  mem_read_flag_out,
   output                  mem_write_flag_out,
-  output                  mem_ext_flag_out,
+  output                  mem_sign_flag_out,
   output  [`MEM_SEL_BUS]  mem_sel_out,
   output  [`DATA_BUS]     mem_write_data_out,
   output                  reg_write_en_out,
@@ -71,10 +71,10 @@ module IDEX(
     mem_write_flag_in, mem_write_flag_out
   );
 
-  PipelineDeliver #(1) ff_mem_ext_flag(
+  PipelineDeliver #(1) ff_mem_sign_flag(
     clk, rst,
     stall_current_stage, stall_next_stage,
-    mem_ext_flag_in, mem_ext_flag_out
+    mem_sign_flag_in, mem_sign_flag_out
   );
 
   PipelineDeliver #(`MEM_SEL_BUS_WIDTH) ff_mem_sel(

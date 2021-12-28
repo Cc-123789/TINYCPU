@@ -11,7 +11,7 @@ module EX(
   input       [`DATA_BUS]     operand_2,
   input                       mem_read_flag_in,
   input                       mem_write_flag_in,
-  input                       mem_ext_flag_in,
+  input                       mem_sign_flag_in,
   input       [`MEM_SEL_BUS]  mem_sel_in,
   input       [`DATA_BUS]     mem_write_data_in,
   input                       reg_write_en_in,
@@ -22,7 +22,7 @@ module EX(
   // to MEM stage
   output                      mem_read_flag_out,
   output                      mem_write_flag_out,
-  output                      mem_ext_flag_out,
+  output                      mem_sign_flag_out,
   output      [`MEM_SEL_BUS]  mem_sel_out,
   output      [`DATA_BUS]     mem_write_data_out,
   // to WB stage
@@ -37,7 +37,7 @@ module EX(
   // to MEM stage
   assign mem_read_flag_out = mem_read_flag_in;
   assign mem_write_flag_out = mem_write_flag_in;
-  assign mem_ext_flag_out = mem_ext_flag_in;
+  assign mem_sign_flag_out = mem_sign_flag_in;
   assign mem_sel_out = mem_sel_in;
   assign mem_write_data_out = mem_write_data_in;
   // to WB stage

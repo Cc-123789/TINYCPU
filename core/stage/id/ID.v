@@ -33,7 +33,7 @@ module ID(
   // to MEM stage
   output                  mem_read_flag,
   output                  mem_write_flag,
-  output                  mem_ext_flag,
+  output                  mem_sign_flag,
   output  [`MEM_SEL_BUS]  mem_sel,
   output  [`DATA_BUS]     mem_write_data,
   // to WB stage (write back to regfile)
@@ -107,7 +107,7 @@ module ID(
     .reg_data_2         (reg_data_2),
     .mem_read_flag      (mem_read_flag),
     .mem_write_flag     (mem_write_flag),
-    .mem_ext_flag  (mem_ext_flag),
+    .mem_sign_flag  (mem_sign_flag),
     .mem_sel            (mem_sel),
     .mem_write_data     (mem_write_data)
   );
