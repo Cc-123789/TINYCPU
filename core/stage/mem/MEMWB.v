@@ -12,7 +12,7 @@ module MEMWB(
   // input from MEM stage
   input                   mem_read_flag_in,
   input                   mem_write_flag_in,
-  input                   mem_ext_flag_in,
+  input                   mem_sign_flag_in,
   input   [`MEM_SEL_BUS]  mem_sel_in,
   input   [`DATA_BUS]     result_in,
   input                   reg_write_en_in,
@@ -23,7 +23,7 @@ module MEMWB(
   // memory accessing signals
   output                  mem_read_flag_out,
   output                  mem_write_flag_out,
-  output                  mem_ext_flag_out,
+  output                  mem_sign_flag_out,
   output  [`MEM_SEL_BUS]  mem_sel_out,
   // regfile
   output  [`DATA_BUS]     result_out,
@@ -51,10 +51,10 @@ module MEMWB(
     mem_write_flag_in, mem_write_flag_out
   );
 
-  PipelineDeliver #(1) ff_mem_ext_flag(
+  PipelineDeliver #(1) ff_mem_sign_flag(
     clk, rst,
     stall_current_stage, stall_next_stage,
-    mem_ext_flag_in, mem_ext_flag_out
+    mem_sign_flag_in, mem_sign_flag_out
   );
 
   PipelineDeliver #(`MEM_SEL_BUS_WIDTH) ff_mem_sel(
