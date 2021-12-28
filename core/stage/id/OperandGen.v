@@ -55,7 +55,7 @@ module OperandGen(
     case (op)
       `OP_LUI,`OP_ORI,
       `OP_XORI,
-      `OP_ANDI,
+      `OP_ANDI
       : begin
         operand_2 <= zero_ext_imm_hi;
       end
@@ -64,7 +64,7 @@ module OperandGen(
       // memory accessing
       `OP_LB,`OP_LH,`OP_LW,`OP_LBU,`OP_LHU,
       `OP_SB,`OP_SH,`OP_SW,
-      `OP_LWL,`OP_LWR,`OP_SWL,`OP_SWR,
+      `OP_LWL,`OP_LWR,`OP_SWL,`OP_SWR
       : begin
         operand_2 <= sign_ext_imm;
       end

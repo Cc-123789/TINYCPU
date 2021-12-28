@@ -2,6 +2,7 @@
 
 `include "bus.v"
 `include "opcode.v"
+`include "funct.v"
 
 module RegGen(
   input       [`INST_OP_BUS]  op,
@@ -75,7 +76,7 @@ module RegGen(
         reg_write_en <= 1;
         reg_write_addr <= rt;
       end
-      `OP_REGIMM:begin
+      `OP_REGIMM: begin
         if ( rt == `FUNCT_BLTZAL || rt == `FUNCT_BGEZAL ) begin
           reg_write_en <= 1;
           reg_write_addr <= 31;   // $ra (return address)          
