@@ -47,11 +47,23 @@ module EX(
 
   // calculate the complement of operand_2
   wire[`DATA_BUS] operand_2_mux =
-      (funct == `FUNCT_SUBU || funct == `FUNCT_SLT)
+      (funct == `FUNCT_SUBU || funct == `FUNCT_SLT || funct == `FUNCT_SUB)
         ? (~operand_2) + 1 : operand_2;
+
+  //if negative, complement of operand_1& operand_2
+  wire[`DATA_BUS] op1_c = (~operand_1) + 1;
+  wire[`DATA_BUS] op2_c = (~operand_2) + 1;
 
   // sum of operand_1 & operand_2
   wire[`DATA_BUS] result_sum = operand_1 + operand_2_mux;
+
+  // overflow flag of operand_1 +/- operand_2
+  wire overflow_flag = 
+        funct == (`FUNCT_ADD || `FUNCT_ADDI || `FUNCT_SUB)?
+          // op1 & op2 is positive, op1 + op2 is negative
+          ((!operand_1[31] && !operand_2[31] && result_sum[31]) ||
+          // op1 & op2 is negative, op1 + op2 is negative
+          (operand_1[31] && operand_2[31] && !result_sum[31])) :0;
 
   // flag of operand_1 < operand_2
   wire operand_1_lt_operand_2 = funct == `FUNCT_SLT ?
@@ -63,6 +75,39 @@ module EX(
           (operand_1[31] && operand_2[31] && result_sum[31]))
       : (operand_1 < operand_2);
 
+  //乘数1：若为有符号乘法且该乘数为负数，则取其补码，否则不变
+  wire[`DATA_BUS] op_mul_1 = 
+          (funct == (`FUNCT_MULT || `FUNCT_MULTU)) && operand_1[31])?
+          op1_c : operand_1;
+  //乘数2
+  wire[`DATA_BUS] op_mul_2 = 
+          (funct == (`FUNCT_MULT || `FUNCT_MULTU)) && operand_2[31])?
+          op2_c : operand_2;
+
+  //(mult)temporary product of operand_1 & operand_2
+  wire[`DOUBLE_DATA_BUS] result_mul_temp = op_mul_1 * op_mul_2 ;
+  
+  wire[`DOUBLE_DATA_BUS] result_mul;
+  //correct the temporary product
+  always @(*) begin
+        if(rst) begin
+            result_mul = {32'h00000000,32'h00000000};
+        end
+        else if(funct == (`FUNCT_MULT || `FUNCT_MULTU)) begin
+            if(operand_1[31] ^ operand_2[31] == 1'b1) begin
+                result_mul = ~result_mul_temp + 1'b1;
+            end
+            else begin
+                result_mul = result_mul_temp;
+            end
+        end
+        else begin
+            result_mul = result_mul_temp;
+        end
+    end
+
+  wire[`DATA_BUS] result_mul_h = result_mul[31:16];
+  wire[`DATA_BUS] result_mul_l = result_mul[15:0];
   // calculate result
   always @(*) begin
     case (funct)
@@ -73,7 +118,9 @@ module EX(
       // comparison
       `FUNCT_SLT, `FUNCT_SLTU: result <= {31'b0, operand_1_lt_operand_2};
       // arithmetic
-      `FUNCT_ADDU, `FUNCT_SUBU: result <= result_sum;
+      `FUNCT_ADD,`FUNCT_ADDU, 
+      `FUNCT_SUB,`FUNCT_SUBU: result <= result_sum;
+      `FUNCT_MULT,`FUNCT_MULTU: result <= result_mul;
       // shift
       `FUNCT_SLL: result <= operand_2 << shamt;
       `FUNCT_SLLV: result <= operand_2 << operand_1[4:0];
