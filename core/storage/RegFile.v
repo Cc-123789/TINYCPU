@@ -35,9 +35,12 @@ module RegFile(
         LO <= 0;
       end
     end
-    else if (write_en && |write_addr) begin
+    else if (write_en && |write_addr && write_addr!=5'b11000) begin
       registers[write_addr] <= write_data;
     end
+    else if (write_en && write_addr==5'b11000) begin
+      LO <= write_data;
+
   end
 
   // reading #1

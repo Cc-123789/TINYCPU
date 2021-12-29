@@ -41,7 +41,7 @@ module EX(
   assign mem_sel_out = mem_sel_in;
   assign mem_write_data_out = mem_write_data_in;
   // to WB stage
-  assign reg_write_en_out = reg_write_en_in && !mem_write_flag_in;
+  assign reg_write_en_out = reg_write_en_in && !mem_write_flag_in && !overflow_flag;
   assign reg_write_addr_out = reg_write_addr_in;
   assign current_pc_addr_out = current_pc_addr_in;
 
@@ -106,8 +106,8 @@ module EX(
         end
     end
 
-  wire[`DATA_BUS] result_mul_h = result_mul[31:16];
-  wire[`DATA_BUS] result_mul_l = result_mul[15:0];
+  wire[`DATA_BUS] result_mul_h = result_mul[63:32];
+  wire[`DATA_BUS] result_mul_l = result_mul[31:0];
   // calculate result
   always @(*) begin
     case (funct)
@@ -120,7 +120,7 @@ module EX(
       // arithmetic
       `FUNCT_ADD,`FUNCT_ADDU, 
       `FUNCT_SUB,`FUNCT_SUBU: result <= result_sum;
-      `FUNCT_MULT,`FUNCT_MULTU: result <= result_mul;
+      `FUNCT_MULT,`FUNCT_MULTU: result <= result_mul_l;
       // shift
       `FUNCT_SLL: result <= operand_2 << shamt;
       `FUNCT_SLLV: result <= operand_2 << operand_1[4:0];
