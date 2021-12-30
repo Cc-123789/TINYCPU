@@ -1,371 +1,431 @@
 {
-    "and":{
-        "op":"000000",
-        "funt":"100100",
-        "shamt":"0",
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "and": {
+        "op": "000000",
+        "funt": "100100",
+        "shamt": "0",
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "or":{
-        "op":"000000",
-        "funt":"100101",
-        "shamt":"0",
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "or": {
+        "op": "000000",
+        "funt": "100101",
+        "shamt": "0",
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "xor":{
-        "op":"000000",
-        "funt":"100110",
-        "shamt":"0",
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "xor": {
+        "op": "000000",
+        "funt": "100110",
+        "shamt": "0",
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "nor":{
-        "op":"000000",
-        "funt":"100111",
-        "shamt":"0",
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "nor": {
+        "op": "000000",
+        "funt": "100111",
+        "shamt": "0",
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "andi":{
-        "op":"001100",
-        "ins_kind":"i",
-        "zeros_reg":"00"
+    "andi": {
+        "op": "001100",
+        "ins_kind": "i",
+        "zeros_reg": "00",
+        "orders":"21"
     },
-    "xori":{
-        "op":"001110",
-        "ins_kind":"i",
-        "zeros_reg":"00"
+    "xori": {
+        "op": "001110",
+        "ins_kind": "i",
+        "zeros_reg": "00",
+        "orders":"21"
     },
-    "lui":{
-        "op":"001111",
-        "ins_kind":"i",
-        "zeros_reg":"10"
+    "lui": {
+        "op": "001111",
+        "ins_kind": "i",
+        "zeros_reg": "10",
+        "orders":"12"
     },
-    "ori":{
-        "op":"001101",
-        "ins_kind":"i",
-        "zeros_reg":"00"
+    "ori": {
+        "op": "001101",
+        "ins_kind": "i",
+        "zeros_reg": "00",
+        "orders":"21"
     },
-    "sll":{
-        "op":"000000",
-        "funt":"000000",
-        "shamt":true,
-        "ins_kind":"r",
-        "zeros_reg":"100"
+    "sll": {
+        "op": "000000",
+        "funt": "000000",
+        "shamt": true,
+        "ins_kind": "r",
+        "zeros_reg": "100",
+        "orders":"132"
     },
-    "srl":{
-        "op":"000000",
-        "funt":"000010",
-        "shamt":true,
-        "ins_kind":"r",
-        "zeros_reg":"100"
+    "srl": {
+        "op": "000000",
+        "funt": "000010",
+        "shamt": true,
+        "ins_kind": "r",
+        "zeros_reg": "100",
+        "orders":"132"
     },
-    "sra":{
-        "op":"000000",
-        "funt":"000011",
-        "shamt":true,
-        "ins_kind":"r",
-        "zeros_reg":"100"
+    "sra": {
+        "op": "000000",
+        "funt": "000011",
+        "shamt": true,
+        "ins_kind": "r",
+        "zeros_reg": "100",
+        "orders":"132"
     },
-    "sllv":{
-        "op":"000000",
-        "funt":"000100",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "sllv": {
+        "op": "000000",
+        "funt": "000100",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"321"
     },
-    "srlv":{
-        "op":"000000",
-        "funt":"000110",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "srlv": {
+        "op": "000000",
+        "funt": "000110",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"321"
     },
-    "srav":{
-        "op":"000000",
-        "funt":"000111",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "srav": {
+        "op": "000000",
+        "funt": "000111",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"321"
     },
-    "movn":{
-        "op":"000000",
-        "funt":"001011",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "movn": {
+        "op": "000000",
+        "funt": "001011",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "movz":{
-        "op":"000000",
-        "funt":"001010",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "movz": {
+        "op": "000000",
+        "funt": "001010",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"321"
     },
-    "mfhi":{
-        "op":"000000",
-        "funt":"010000",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"110"
+    "mfhi": {
+        "op": "000000",
+        "funt": "010000",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "110",
+        "orders":"123"
     },
-    "mflo":{
-        "op":"000000",
-        "funt":"010010",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"110"
+    "mflo": {
+        "op": "000000",
+        "funt": "010010",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "110",
+        "orders":"123"
     },
-    "mthi":{
-        "op":"000000",
-        "funt":"010001",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"011"
+    "mthi": {
+        "op": "000000",
+        "funt": "010001",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "011",
+        "orders":"123"
     },
-    "mtlo":{
-        "op":"000000",
-        "funt":"010010",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"011"
+    "mtlo": {
+        "op": "000000",
+        "funt": "010010",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "011",
+        "orders":"123"
     },
-    "add":{
-        "op":"000000",
-        "funt":"100000",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "add": {
+        "op": "000000",
+        "funt": "100000",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "addu":{
-        "op":"000000",
-        "funt":"100001",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "addu": {
+        "op": "000000",
+        "funt": "100001",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "sub":{
-        "op":"000000",
-        "funt":"100010",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "sub": {
+        "op": "000000",
+        "funt": "100010",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "subu":{
-        "op":"000000",
-        "funt":"100011",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "subu": {
+        "op": "000000",
+        "funt": "100011",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "slt":{
-        "op":"000000",
-        "funt":"101010",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "slt": {
+        "op": "000000",
+        "funt": "101010",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "sltu":{
-        "op":"000000",
-        "funt":"101011",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"000"
+    "sltu": {
+        "op": "000000",
+        "funt": "101011",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "000",
+        "orders":"312"
     },
-    "mult":{
-        "op":"000000",
-        "funt":"011000",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"001"
+    "mult": {
+        "op": "000000",
+        "funt": "011000",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "001",
+        "orders":"123"
     },
-    "multu":{
-        "op":"000000",
-        "funt":"011001",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"001"
+    "multu": {
+        "op": "000000",
+        "funt": "011001",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "001",
+        "orders":"123"
     },
-    "div":{
-        "op":"000000",
-        "funt":"011010",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"001"
+    "div": {
+        "op": "000000",
+        "funt": "011010",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "001",
+        "orders":"123"
     },
-    "divu":{
-        "op":"000000",
-        "funt":"011011",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"001"
+    "divu": {
+        "op": "000000",
+        "funt": "011011",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "001",
+        "orders":"123"
     },
-    "addi":{
-        "op":"001000",
-        "ins_kind":"i",
-        "zeros_reg":"00"
+    "addi": {
+        "op": "001000",
+        "ins_kind": "i",
+        "zeros_reg": "00",
+        "orders":"21"
     },
-    "addiu":{
-        "op":"001001",
-        "ins_kind":"i",
-        "zeros_reg":"00"
+    "addiu": {
+        "op": "001001",
+        "ins_kind": "i",
+        "zeros_reg": "00",
+        "orders":"21"
     },
-    "slti":{
-        "op":"001010",
-        "ins_kind":"i",
-        "zeros_reg":"00"
+    "slti": {
+        "op": "001010",
+        "ins_kind": "i",
+        "zeros_reg": "00",
+        "orders":"21"
     },
-    "sltiu":{
-        "op":"001011",
-        "ins_kind":"i",
-        "zeros_reg":"00"
+    "sltiu": {
+        "op": "001011",
+        "ins_kind": "i",
+        "zeros_reg": "00",
+        "orders":"21"
     },
-    "jr":{
-        "op":"000000",
-        "funt":"001000",
-        "shamt":false,
-        "ins_kind":"r",
-        "zeros_reg":"011"
+    "jr": {
+        "op": "000000",
+        "funt": "001000",
+        "shamt": false,
+        "ins_kind": "r",
+        "zeros_reg": "011",
+        "orders":"123"
     },
-    "jalr":{
-        "op":"000000",
-        "funt":"001001",
-        "shamt":false,
-        "ins_kind":"jalr",
-        "zeros_reg":"010"
+    "jalr": {
+        "op": "000000",
+        "funt": "001001",
+        "shamt": false,
+        "ins_kind": "jalr",
+        "zeros_reg": "010",
+        "orders":"321"
     },
-    "j":{
-        "op":"000010",
-        "ins_kind":"j"
+    "j": {
+        "op": "000010",
+        "ins_kind": "j"
     },
-    "jal":{
-        "op":"000011",
-        "ins_kind":"j"
+    "jal": {
+        "op": "000011",
+        "ins_kind": "j"
     },
-    "beq":{
-        "op":"000100",
-        "ins_kind":"b",
-        "zeros_reg":"00"
+    "beq": {
+        "op": "000100",
+        "ins_kind": "b",
+        "zeros_reg": "00",
+        "orders":"12"
     },
-    "b":{
-        "op":"000100",
-        "ins_kind":"b",
-        "zeros_reg":"11"
+    "b": {
+        "op": "000100",
+        "ins_kind": "b",
+        "zeros_reg": "11",
+        "orders":"12"
     },
-    "bgtz":{
-        "op":"000111",
-        "ins_kind":"b",
-        "zeros_reg":"01"
+    "bgtz": {
+        "op": "000111",
+        "ins_kind": "b",
+        "zeros_reg": "01",
+        "orders":"12"
     },
-    "blez":{
-        "op":"000110",
-        "ins_kind":"b",
-        "zeros_reg":"01"
+    "blez": {
+        "op": "000110",
+        "ins_kind": "b",
+        "zeros_reg": "01",
+        "orders":"12"
     },
-    "bne":{
-        "op":"000101",
-        "ins_kind":"b",
-        "zeros_reg":"00"
+    "bne": {
+        "op": "000101",
+        "ins_kind": "b",
+        "zeros_reg": "00",
+        "orders":"12"
     },
-    "bltz":{
-        "op":"000001",
-        "ins_kind":"regimm",
-        "special_reg":"00",
-        "zeros_reg":"10"
+    "bltz": {
+        "op": "000001",
+        "ins_kind": "regimm",
+        "special_reg": "00",
+        "zeros_reg": "10",
+        "orders":"12"
     },
-    "bltzal":{
-        "op":"000001",
-        "ins_kind":"regimm",
-        "special_reg":"16",
-        "zeros_reg":"10"
+    "bltzal": {
+        "op": "000001",
+        "ins_kind": "regimm",
+        "special_reg": "16",
+        "zeros_reg": "10",
+        "orders":"12"
     },
-    "bgez":{
-        "op":"000001",
-        "ins_kind":"regimm",
-        "special_reg":"01",
-        "zeros_reg":"10"
+    "bgez": {
+        "op": "000001",
+        "ins_kind": "regimm",
+        "special_reg": "01",
+        "zeros_reg": "10",
+        "orders":"12"
     },
-    "bgezal":{
-        "op":"000001",
-        "ins_kind":"regimm",
-        "special_reg":"17",
-        "zeros_reg":"10"
+    "bgezal": {
+        "op": "000001",
+        "ins_kind": "regimm",
+        "special_reg": "17",
+        "zeros_reg": "10",
+        "orders":"12"
     },
-    "bal":{
-        "op":"000001",
-        "ins_kind":"regimm",
-        "special_reg":"0017",
-        "zeros_reg":"00"
+    "bal": {
+        "op": "000001",
+        "ins_kind": "regimm",
+        "special_reg": "0017",
+        "zeros_reg": "00",
+        "orders":"12"
     },
-    "lb":{
-        "op":"100000",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "lb": {
+        "op": "100000",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "lbu":{
-        "op":"100100",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "lbu": {
+        "op": "100100",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "lh":{
-        "op":"100001",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "lh": {
+        "op": "100001",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "lhu":{
-        "op":"100101",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "lhu": {
+        "op": "100101",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "lw":{
-        "op":"100011",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "lw": {
+        "op": "100011",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "sb":{
-        "op":"101000",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "sb": {
+        "op": "101000",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "sh":{
-        "op":"101001",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "sh": {
+        "op": "101001",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "sw":{
-        "op":"101011",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "sw": {
+        "op": "101011",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "lwl":{
-        "op":"100010",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "lwl": {
+        "op": "100010",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "lwr":{
-        "op":"100110",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "lwr": {
+        "op": "100110",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "swl":{
-        "op":"101010",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "swl": {
+        "op": "101010",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "swr":{
-        "op":"101110",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "swr": {
+        "op": "101110",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "ll":{
-        "op":"110000",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "ll": {
+        "op": "110000",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     },
-    "sc":{
-        "op":"111000",
-        "ins_kind":"lb",
-        "zeros_reg":"0"
+    "sc": {
+        "op": "111000",
+        "ins_kind": "lb",
+        "zeros_reg": "0",
+        "orders":"1"
     }
 }
