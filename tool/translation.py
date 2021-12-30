@@ -120,8 +120,6 @@ class Translation():
             temp[ int( order ) - 1 ] = reg
 
         result = ''.join(temp)
-        print(result)
-
         return result
 
     #指令对应格式的翻译方法如下
