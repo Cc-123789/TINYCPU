@@ -7,7 +7,6 @@ module Core(
   input                   rst,
   input                   stall,
   // ROM control
-  output                  rom_en,
   output  [`MEM_SEL_BUS]  rom_write_en,
   output  [`ADDR_BUS]     rom_addr,
   input   [`DATA_BUS]     rom_read_data,
@@ -45,7 +44,6 @@ module Core(
     .branch_addr    (pc_branch_addr),
     .pc             (pc_pc),
 
-    .rom_en         (rom_en),
     .rom_write_en   (rom_write_en),
     .rom_addr       (rom_addr),
     .rom_write_data (rom_write_data)

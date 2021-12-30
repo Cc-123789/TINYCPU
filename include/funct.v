@@ -12,8 +12,16 @@
 `define FUNCT_JR        6'b001000
 
 // arithmetic
+`define FUNCT_ADD       6'b100000
 `define FUNCT_ADDU      6'b100001
+`define FUNCT_SUB       6'b100010
 `define FUNCT_SUBU      6'b100011
+`define FUNCT_MULT      6'b011000
+`define FUNCT_MULTU     6'b011001
+`define FUNCT_DIV       6'b011010
+`define FUNCT_DIVU      6'b011011
+
+
 
 // logic
 `define FUNCT_AND       6'b100100

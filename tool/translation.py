@@ -83,6 +83,7 @@ class Translation():
 
         try :
             instruction_form = self.__op_dict[ segements[0] ]                #指令操作符对应格式
+
         except KeyError:
             print('不存在该关键字',segements[0])                            #如果有异常，则助记符写错了
             return

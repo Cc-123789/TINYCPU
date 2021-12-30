@@ -65,8 +65,16 @@ module RegGen(
         reg_write_addr <= rt;
       end
       `OP_SPECIAL,`OP_SPECIAL2: begin
-        reg_write_en <= 1;
-        reg_write_addr <= rd;
+        case (funct)
+        `FUNCT_MULT,`FUNCT_MULTU,`FUNCT_MUL
+        : begin
+          reg_write_en <= 1;
+          reg_write_addr <= 5'b11000;
+        end
+        default: begin
+          reg_write_en <= 1;
+          reg_write_addr <= rd;
+        end
       end
       `OP_JAL: begin
         reg_write_en <= 1;
