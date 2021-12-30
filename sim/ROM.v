@@ -17,7 +17,7 @@ module ROM(
   reg temp;
   // initialize with program
   initial begin
-    $readmemh("inst_rom.bin", inst_mem);
+    $readmemh("data.bin", inst_mem);
   end
 
   wire[`ADDR_BUS] addr = rom_addr - `INIT_PC;

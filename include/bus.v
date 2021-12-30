@@ -17,6 +17,10 @@
 `define HALF_DATA_BUS           15:0
 `define HALF_DATA_BUS_WIDTH     16
 
+//double size data bus
+`define DOUBLE_DATA_BUS         63:0
+`define DOUBLE_DATA_BUS_WIDTH   64
+
 // register bus
 `define REG_ADDR_BUS            4:0
 `define REG_ADDR_BUS_WIDTH      5
