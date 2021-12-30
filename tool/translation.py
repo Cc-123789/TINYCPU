@@ -228,7 +228,9 @@ if __name__ == '__main__':
                             temp = re.findall(r'.{4}',temp)      #按四个二进制数切割，准备转换为十六进制
                             # 二进制转为十六进制
                             temp = [ "{:x}".format( int(binary,2) ) for binary in temp ] 
-                            temp = ''.join(temp)                 #列表拼接为字符串
+                            # 将十六进制数切割为两个一组，空格隔开的字符串
+                            temp = [ temp[ 2*i ] + temp[ 2*i + 1] for i in range(4) ] 
+                            temp = " ".join(temp)                           
                             w.write(temp+'\n')                   #写入文件
     else:
         print("文件被占用或无效")
