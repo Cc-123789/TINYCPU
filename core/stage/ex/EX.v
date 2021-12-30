@@ -45,6 +45,12 @@ module EX(
   assign reg_write_addr_out = reg_write_addr_in;
   assign current_pc_addr_out = current_pc_addr_in;
 
+  reg[`DATA_BUS] HI;
+  reg[`DATA_BUS] LO;
+  initial begin
+      HI <= 0;
+      LO <= 0;
+  end
   // calculate the complement of operand_2
   wire[`DATA_BUS] operand_2_mux =
       (funct == `FUNCT_SUBU || funct == `FUNCT_SLT || funct == `FUNCT_SUB)
@@ -75,13 +81,17 @@ module EX(
           (operand_1[31] && operand_2[31] && result_sum[31]))
       : (operand_1 < operand_2);
 
+    /*****************
+    ** MULT/MULTU   ***
+    ******************/
+
   //乘数1：若为有符号乘法且该乘数为负数，则取其补码，否则不变
   wire[`DATA_BUS] op_mul_1 = 
-          (funct == (`FUNCT_MULT || `FUNCT_MULTU)) && operand_1[31])?
+          (funct == (`FUNCT_MULT) && operand_1[31])?
           op1_c : operand_1;
   //乘数2
   wire[`DATA_BUS] op_mul_2 = 
-          (funct == (`FUNCT_MULT || `FUNCT_MULTU)) && operand_2[31])?
+          (funct == (`FUNCT_MULT) && operand_2[31])?
           op2_c : operand_2;
 
   //(mult)temporary product of operand_1 & operand_2
@@ -90,24 +100,108 @@ module EX(
   wire[`DOUBLE_DATA_BUS] result_mul;
   //correct the temporary product
   always @(*) begin
-        if(rst) begin
-            result_mul = {32'h00000000,32'h00000000};
-        end
-        else if(funct == (`FUNCT_MULT || `FUNCT_MULTU)) begin
-            if(operand_1[31] ^ operand_2[31] == 1'b1) begin
-                result_mul = ~result_mul_temp + 1'b1;
-            end
-            else begin
-                result_mul = result_mul_temp;
-            end
+    result_mul = {32'h00000000,32'h00000000};
+    if(funct == (`FUNCT_MULT) begin
+      if(operand_1[31] ^ operand_2[31] == 1'b1) begin
+          result_mul = ~result_mul_temp + 1'b1;
+      end
+      else begin
+          result_mul = result_mul_temp;
+      end
+    end
+    else begin
+            result_mul = result_mul_temp;
+    end
+  end
+
+    /*****************
+    ** DIV/DIVU   ***
+    ******************/
+
+  wire [`REG_ADDR_BUS] div_shift_cnt;//记录移位数
+  wire [`DATA_BUS] div_quo = 0;//商，初值为0
+  wire [`DATA_BUS] div_rem = op_div_1;//余数，初值为被除数
+  wire [`DATA_BUS] div_temp = 0;//暂存中间结果
+  
+  //被除数：若为有符号乘法且该乘数为负数，则取其补码，否则不变
+  wire[`DATA_BUS] op_div_1 = 
+          (funct == `FUNCT_DIV && operand_1[31])?
+          op1_c : operand_1;
+  //除数
+  wire[`DATA_BUS] op_div_2 = 
+          (funct == `FUNCT_DIV && operand_2[31])?
+          op2_c : operand_2;
+
+  always @(*) begin
+    wire[`REG_ADDR_BUS] n_1 = 32'h11111111;
+    wire[`REG_ADDR_BUS] n_2 = 32'h11111111;
+    while (!op_div_1[n_1]) begin
+      n_1 = n_1-1;
+    end
+    while (!op_div_2[n_2]) begin
+      n_2 = n_2-1;
+    end
+  end
+
+  div_shift_cnt = n_1 - n_2;
+
+always @(*) begin
+  if (op_div_1 < op_div_2) begin
+    div_quo = 0;
+    div_rem = op_div_2;
+  end
+  else if (op_div_1 == op_div_2) begin
+    div_quo = 1;
+    div_rem = 0;
+  end
+  //除法移位实现
+  else begin
+    if (n_1 == n_2)begin
+      div_quo = 1;
+      div_rem = op_div_1 - op_div_2;
+    end
+    else 
+      while (n_1 > n_2)begin
+        div_temp = div_rem - (op_div_2 << div_shift_cnt)
+        //余数 > 移位后的数
+        if (!div_temp[31]) begin
+            div_quo = div_quo + (1 << div_shift_cnt);
+            div_rem = div_temp;
+            div_shift_cnt = div_shift_cnt - 1;
         end
         else begin
-            result_mul = result_mul_temp;
+          break;
         end
     end
+  end
+end
 
-  wire[`DATA_BUS] result_mul_h = result_mul[63:32];
-  wire[`DATA_BUS] result_mul_l = result_mul[31:0];
+  //correct
+always @(*) begin
+    if(funct == (`FUNCT_DIV) begin
+      if(operand_1[31] ^ operand_2[31] == 1'b1) begin
+          div_quo = ~div_quo + 1'b1;
+      end
+      else begin
+          div_quo = div_quo;
+      end
+      if(operand_2[31])begin
+        div_rem = ~div_rem + 1'b1;
+      end
+      else begin
+        div_rem = div_rem;
+      end
+    end
+    else begin
+        div_quo = div_quo;
+        div_rem = div_rem;
+    end
+  end
+
+ /*****************
+    ** 结束乘除运算   ***
+    ******************/
+
   // calculate result
   always @(*) begin
     case (funct)
@@ -120,7 +214,12 @@ module EX(
       // arithmetic
       `FUNCT_ADD,`FUNCT_ADDU, 
       `FUNCT_SUB,`FUNCT_SUBU: result <= result_sum;
-      `FUNCT_MULT,`FUNCT_MULTU: result <= result_mul_l;
+      `FUNCT_MULT,`FUNCT_MULTU: 
+          HI <= result_mul[63:32];
+          LO <= result_mul[31:0];
+      `FUNCT_DIV,`FUNCT_DIVU: 
+          HI <= div_rem;
+          LO <= div_quo;
       // shift
       `FUNCT_SLL: result <= operand_2 << shamt;
       `FUNCT_SLLV: result <= operand_2 << operand_1[4:0];

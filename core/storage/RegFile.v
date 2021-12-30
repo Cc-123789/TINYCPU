@@ -20,9 +20,8 @@ module RegFile(
 );
 
   reg[`DATA_BUS] registers[0:31];
-  reg[`DATA_BUS] reg_flag;
-  reg[`DATA_BUS] HI;
-  reg[`DATA_BUS] LO;
+  //reg[`DATA_BUS] reg_flag;
+ 
   integer i;
 
   // writing
@@ -30,17 +29,12 @@ module RegFile(
     if (rst) begin
       for (i = 0; i < 32; i = i + 1) begin
         registers[i] <= 0;
-        reg_flag <= 0;
-        HI <= 0;
-        LO <= 0;
+        //reg_flag <= 0;
       end
     end
     else if (write_en && |write_addr && write_addr!=5'b11000) begin
       registers[write_addr] <= write_data;
     end
-    else if (write_en && write_addr==5'b11000) begin
-      LO <= write_data;
-
   end
 
   // reading #1
