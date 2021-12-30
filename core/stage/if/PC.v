@@ -13,8 +13,6 @@ module PC(
   input       [`ADDR_BUS]     branch_addr,
   // to ID stage
   output  reg [`ADDR_BUS]     pc,
-  // ROM control
-  output  reg                 rom_en,
   output      [`MEM_SEL_BUS]  rom_write_en,
   output      [`ADDR_BUS]     rom_addr,
   output      [`DATA_BUS]     rom_write_data
@@ -26,12 +24,8 @@ module PC(
   assign rom_write_en = 0;
   assign rom_write_data = 0;
 
-  always @(posedge clk) begin
-    rom_en = !rst;
-  end
-
   always @(posedge clk) begin      
-    if (!rom_en) begin
+    if ( rst ) begin
       pc <= `INIT_PC - 4;
     end
     else if (!stall_pc) begin
@@ -52,7 +46,9 @@ module PC(
     else begin
       // pc & rom_addr stall
       next_pc <= pc;
-    end
+  end
+
+
   end
 
 

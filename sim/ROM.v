@@ -14,7 +14,7 @@ module ROM(
 );
 
   reg[7:0] inst_mem[`INST_MEM_BUS];
-
+  reg temp;
   // initialize with program
   initial begin
     $readmemh("data.bin", inst_mem);
