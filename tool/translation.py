@@ -94,23 +94,32 @@ class Translation():
         return result
 
     #寄存器译码方法
-    def _reg_translation(self,segements,zeros_reg):
+    def _reg_translation(self,segements,zeros_reg,orders):
 
         i = 0
-        result = ''
+        result = [ ]
         for flag in zeros_reg:
             if flag == '0':
                 try:
                     string = re.sub(r'\$', r'', segements[i])            # 去掉$
                     if not string.isdecimal():                           # 如果寄存器名为别名，进行处理
                         string = self.__reg_dict[string]
-                    result = result + "{:0>5b}".format( int(string) )    # 把标号转为2进制,并加入
+
+                    # 把标号转为2进制,并加入
+                    result.append( "{:0>5b}".format( int(string) ) )   
                     i = i + 1
                 except IndexError:
                     print("该指令寄存器数量异常")
                     exit(-1)
             else:
-                result = result + "00000"                             # 标志为1则为零号寄存器
+                result = result.append( "00000" )                        # 标志为1则为零号寄存器
+
+        temp = [ None for _ in range(len(orders))]
+
+        for order,reg in zip(orders,result):
+            temp[ int( order ) - 1 ] = reg
+
+        result = ''.join(temp)
         return result
 
     #指令对应格式的翻译方法如下
@@ -119,7 +128,7 @@ class Translation():
         result = instruction_form['op']                               # 加入操作码
 
         # 寄存器译码
-        result = result + self._reg_translation(segements,instruction_form['zeros_reg'])    
+        result = result + self._reg_translation(segements,instruction_form['zeros_reg'],instruction_form['orders']) 
 
         #加入偏移段
         if instruction_form['shamt']:
@@ -137,7 +146,7 @@ class Translation():
         result = instruction_form['op']                                # 加入操作码
 
         # 寄存器译码
-        result = result + self._reg_translation(segements,instruction_form['zeros_reg']) 
+        result = result + self._reg_translation(segements,instruction_form['zeros_reg'],instruction_form['orders'])
 
         #加入立即数
         result = result + "{:0>16b}".format( int( segements[-1] ) )
@@ -157,7 +166,7 @@ class Translation():
         result = instruction_form['op']                                # 加入操作码
 
         # 寄存器译码
-        result = result + self._reg_translation(segements,instruction_form['zeros_reg']) 
+        result = result + self._reg_translation(segements,instruction_form['zeros_reg'],instruction_form['orders'])
 
         #加入偏移量
         result = result + "{:0>16b}".format( int( segements[-1] ) ) 
@@ -173,7 +182,7 @@ class Translation():
         segements = temp + segements                                   # 拼接寄存器标号和偏移量
 
         # 寄存器译码
-        result =  result + self._reg_translation(segements,instruction_form['zeros_reg']) 
+        result =  result + self._reg_translation(segements,instruction_form['zeros_reg'],instruction_form['orders'])
 
         #加入偏移量
         result = result + "{:0>16b}".format( int( segements[-1] ) ) 
@@ -185,7 +194,7 @@ class Translation():
         result = instruction_form['op']     # 加入操作码
 
         # 寄存器译码
-        reg = self._reg_translation(segements,instruction_form['zeros_reg']) 
+        reg = self._reg_translation(segements,instruction_form['zeros_reg'],instruction_form['orders'])
 
         # 基址寄存器译码
         base = re.search(r'\(.*\)',segements[-1]).group()                       # 寻找基址寄存器
@@ -219,7 +228,9 @@ if __name__ == '__main__':
                             temp = re.findall(r'.{4}',temp)      #按四个二进制数切割，准备转换为十六进制
                             # 二进制转为十六进制
                             temp = [ "{:x}".format( int(binary,2) ) for binary in temp ] 
-                            temp = ''.join(temp)                 #列表拼接为字符串
+                            # 将十六进制数切割为两个一组，空格隔开的字符串
+                            temp = [ temp[ 2*i ] + temp[ 2*i + 1] for i in range(4) ] 
+                            temp = " ".join(temp)                           
                             w.write(temp+'\n')                   #写入文件
     else:
         print("文件被占用或无效")
