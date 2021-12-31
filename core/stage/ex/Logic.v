@@ -32,6 +32,9 @@ module Logic (
             `FUNCT_SRAV: result <= ({32{operand_2[31]}} << (6'd32 - {1'b0, operand_1[4:0]})) | operand_2 >> operand_1[4:0];
         endcase
     end
+    else begin
+        result <= 0;
+    end
   end
 
 endmodule

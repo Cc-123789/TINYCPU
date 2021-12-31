@@ -33,7 +33,7 @@ module EX(
   output      [`MEM_SEL_BUS]  mem_sel_out,
   output      [`DATA_BUS]     mem_write_data_out,
   // to WB stage
-  output  reg [`DATA_BUS]     result,
+  output      [`DATA_BUS]     result,
   output                      reg_write_en_out,
   output      [`REG_ADDR_BUS] reg_write_addr_out,
   output      [`ADDR_BUS]     current_pc_addr_out
@@ -63,34 +63,69 @@ module EX(
           // op1 & op2 is negative, op1 + op2 is negative
           (operand_1[31] && operand_2[31] && !result[31])) :0;
 
-
   assign hilo_write_en = ( funct == `FUNCT_MTHI || funct == `FUNCT_MTLO ) ? 1 : 0;
 
-  // calculate result
+  reg [4:0] select；
+
+  initial begin
+    select <= 5'b0;
+  end
+
+  MUX mux(
+    .adder_result(adder_result),
+    .multiplier_result(multiplier_result),
+    .divider_reesult(divider_reesult),
+    .logic_reesult(logic_reesult),
+    .select(select),
+    .result(result)
+  );
+
+  Adder adder(
+    .funct(funct),
+    .add_en(add_en),
+    .operand_1(operand_1),
+    .operand_2(operand_2),
+    .result(adder_result)
+  );
+
+
+  Multiplier multiplier(
+    .funct(funct),
+    .mul_en(mul_en),
+    .operand_1(operand_1),
+    .operand_2(operand_2),
+    .result(multiplier_result)
+  );
+
+  Divider divider(
+    .funct(funct),
+    .div_en(div_en),
+    .operand_1(operand_1),
+    .operand_2(operand_2),
+    .result(divider_reesult)
+  );
+
+  Logic logic(
+    .funct(funct)
+    .logic_en(logic_en)
+    .operand_1(operand_1)
+    .operand_2(operand_2)
+    .result(logic_reesult)
+  );
+ 
+ // calculate result
   always @(*) begin
     case (funct)
       // arithmetic
       `FUNCT_ADD,`FUNCT_ADDU, 
-      `FUNCT_SUB,`FUNCT_SUBU: result <= result_sum;
+      `FUNCT_SUB,`FUNCT_SUBU:  select <= 5'b00001;
       // HILO
-      `FUNCT_MFHI: result <= hi_read_data;
-      `FUNCT_MFLO: result <= hi_read_data;
-      `FUNCT_MTHI: begin
-        hi_write_data <= operand_1;
-        lo_write_data <= lo_read_data;
-        result <= 0;
-      end
-      `FUNCT_MTLO: begin
-        hi_write_data <= hi_read_data;
-        lo_write_data <= operand_1;
-        result <= 0;
-      end
+      `FUNCT_MFHI,`FUNCT_MFLO,
+      `FUNCT_MTHI,`FUNCT_MTLO: select <= 5'b10000;
       default: begin
         result <= 0;
       end
     endcase
   end
-
-
-
+  
 endmodule // EX

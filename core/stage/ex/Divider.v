@@ -3,7 +3,7 @@ module Divider (
   input                           div_en,
   input       [`DATA_BUS]         operand_1,
   input       [`DATA_BUS]         operand_2,
-  output  reg [`DATA_BUS]         result
+  output      [`DATA_BUS]         result
 );
 
   /** 函数pos：确定操作数有效位数   ***/
