@@ -13,7 +13,7 @@ module Adder(
 
   wire overflow_flag = 
           // op1 & op2 is positive, op1 + op2 is negative
-          ((!operand_1[31] && !operand_2[31] && result[31]) ||
+          (!operand_1[31] && !operand_2[31] && result[31]) ||
           // op1 & op2 is negative, op1 + op2 is negative
           (operand_1[31] && operand_2[31] && !result[31])) ;
 

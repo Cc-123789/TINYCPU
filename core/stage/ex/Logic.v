@@ -6,15 +6,17 @@ module Logic (
   output      [`DATA_BUS]         result
 );
 
+  wire sub_result = operand_1 - operand_2;
+
   // flag of operand_1 < operand_2
   wire operand_1_lt_operand_2 = funct == `FUNCT_SLT ?
         // op1 is negative & op2 is positive
         ((operand_1[31] && !operand_2[31]) ||
           // op1 & op2 is positive, op1 - op2 is negative
-          (!operand_1[31] && !operand_2[31] && result [31]) ||
+          (!operand_1[31] && !operand_2[31] && sub_result [31]) ||
           // op1 & op2 is negative, op1 - op2 is negative
-          (operand_1[31] && operand_2[31] && result [31]))
-      : (operand_1 < operand_2);
+          (operand_1[31] && operand_2[31] && sub_result [31]))
+          : (operand_1 < operand_2);
 
   always @(*) begin
     if ( logic_en ) begin

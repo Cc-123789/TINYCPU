@@ -20,31 +20,26 @@
   wire[`DOUBLE_DATA_BUS] result_mul;
 
   //乘数1：若为有符号乘法且该乘数为负数，则取其补码，否则不变
-  wire[`DATA_BUS] op_mul_1 = 
-          (funct == (`FUNCT_MULT) && operand_1[31])?
-          op1_c : operand_1;
+  wire[`DATA_BUS] op_mul_1 = operand_1[31] ? op1_c : operand_1;
+
   //乘数2
-  wire[`DATA_BUS] op_mul_2 = 
-          (funct == (`FUNCT_MULT) && operand_2[31])?
-          op2_c : operand_2;
+  wire[`DATA_BUS] op_mul_2 = operand_2[31] ? op2_c : operand_2;
 
   //correct the temporary product
   always @(*) begin
     if (mul_en) begin
       done = 0;
       result_mul = {32'h00000000,32'h00000000};
-      if(funct == `FUNCT_MULT) begin
-        if( operand_1[31] ^ operand_2[31] == 1'b1) begin
+        if( operand_1[31] ^ operand_2[31] == 1) begin
           result_mul = ~result_mul_temp + 1'b1;
         end
         else begin
           result_mul = result_mul_temp;
         end
-      end
-      else begin
-          result_mul = result_mul_temp;
-      end
       done = 1;
+    end
+    else begin
+      result_mul = {32'h00000000,32'h00000000};
     end
   end
 
