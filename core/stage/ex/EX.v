@@ -71,6 +71,9 @@ module EX(
     select <= 5'b0;
   end
 
+  wire add_en,mul_en,div_en,logic_en,hilo_en;
+  assign { hilo_en,logic_en,div_en,mul_enadd_en } = select;
+
   MUX mux(
     .adder_result(adder_result),
     .multiplier_result(multiplier_result),
@@ -112,7 +115,19 @@ module EX(
     .operand_2(operand_2)
     .result(logic_reesult)
   );
- 
+
+  Hilo_Gen hilo_gen(
+    .funct(funct),
+    .hilo_en(hilo_en),
+    .hi_read_data(hi_read_data),
+    .lo_read_data(lo_read_data),
+    .operand_1(operand_1),
+    .hi_write_data(hi_write_data),
+    .lo_write_data(lo_write_data),
+    .hilo_write_en(hilo_write_en),
+    .result(hilo_result)
+  );
+
  // calculate result
   always @(*) begin
     case (funct)
@@ -122,10 +137,18 @@ module EX(
       // HILO
       `FUNCT_MFHI,`FUNCT_MFLO,
       `FUNCT_MTHI,`FUNCT_MTLO: select <= 5'b10000;
+      // logic 
+      `FUNCT_JALR, 
+      `FUNCT_OR,`FUNCT_AND: `FUNCT_XOR,
+      `FUNCT_SLT,`FUNCT_SLL ,`FUNCT_SLLV,`FUNCT_SRLV,`FUNCT_SRAV: select <= 5'b01000;
+      // multiplier
+      `FUNCT_MULT : select <= 5'b00010;
+      // divider
+      `FUNCT_DIV  : select <= 5'b00100;
       default: begin
-        result <= 0;
+        select <= 0;
       end
     endcase
   end
-  
+
 endmodule // EX

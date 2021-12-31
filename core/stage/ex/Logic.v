@@ -3,7 +3,7 @@ module Logic (
   input                           logic_en,
   input       [`DATA_BUS]         operand_1,
   input       [`DATA_BUS]         operand_2,
-  output  reg [`DATA_BUS]         result
+  output      [`DATA_BUS]         result
 );
 
   // flag of operand_1 < operand_2

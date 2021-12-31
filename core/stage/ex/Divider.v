@@ -55,9 +55,6 @@ module Divider (
   end
   endfunction
 
-    /*****************
-    ** DIV/DIVU   ***
-    ******************/
   //if negative, complement of operand_1& operand_2
   wire[`DATA_BUS] op1_c = (~operand_1) + 1;
   wire[`DATA_BUS] op2_c = (~operand_2) + 1;
@@ -68,6 +65,7 @@ module Divider (
   wire [`DATA_BUS] div_temp = 0;//暂存中间结果
   wire[`REG_ADDR_BUS] n_1;
   wire[`REG_ADDR_BUS] n_2;
+
   //被除数：若为有符号乘法且该乘数为负数，则取其补码，否则不变
   wire[`DATA_BUS] op_div_1 = 
           (funct == `FUNCT_DIV && operand_1[31])?
