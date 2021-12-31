@@ -107,7 +107,7 @@ module ID(
     .reg_data_2         (reg_data_2),
     .mem_read_flag      (mem_read_flag),
     .mem_write_flag     (mem_write_flag),
-    .mem_sign_flag  (mem_sign_flag),
+    .mem_sign_flag      (mem_sign_flag),
     .mem_sel            (mem_sel),
     .mem_write_data     (mem_write_data)
   );

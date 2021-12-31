@@ -31,11 +31,11 @@ module RegReadProxy(
 
   // generate load related signals
   assign load_related_1 =
-      (ex_load_flag && read_en_1 && read_addr_1 == reg_write_addr_from_ex) ||
-      (mem_load_flag && read_en_1 && read_addr_1 == reg_write_addr_from_mem);
+      ( ex_load_flag && read_en_1 && read_addr_1 == reg_write_addr_from_ex) ||
+      ( mem_load_flag && read_en_1 && read_addr_1 == reg_write_addr_from_mem);
   assign load_related_2 =
-      (ex_load_flag && read_en_2 && read_addr_2 == reg_write_addr_from_ex) ||
-      (mem_load_flag && read_en_2 && read_addr_2 == reg_write_addr_from_mem);
+      ( ex_load_flag && read_en_2 && read_addr_2 == reg_write_addr_from_ex) ||
+      ( mem_load_flag && read_en_2 && read_addr_2 == reg_write_addr_from_mem);
 
   // generate output read_data_1
   always @(*) begin

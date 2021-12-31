@@ -3,7 +3,8 @@ module Divider (
   input                           div_en,
   input       [`DATA_BUS]         operand_1,
   input       [`DATA_BUS]         operand_2,
-  output      [`DATA_BUS]         result
+  output      reg                 done,
+  output      [`DOUBLE_DATA_BUS]  result_div
 );
 
   /** 函数pos：确定操作数有效位数   ***/
@@ -63,8 +64,8 @@ module Divider (
   wire [`DATA_BUS] div_quo = 0;//商，初值为0
   wire [`DATA_BUS] div_rem = op_div_1;//余数，初值为被除数
   wire [`DATA_BUS] div_temp = 0;//暂存中间结果
-  wire[`REG_ADDR_BUS] n_1;
-  wire[`REG_ADDR_BUS] n_2;
+  wire [`REG_ADDR_BUS] n_1;
+  wire [`REG_ADDR_BUS] n_2;
 
   //被除数：若为有符号乘法且该乘数为负数，则取其补码，否则不变
   wire[`DATA_BUS] op_div_1 = 
@@ -82,6 +83,7 @@ module Divider (
   div_shift_cnt = n_1 - n_2;
 
   always @(*) begin
+    done = 0;
     if (op_div_1 < op_div_2) begin
       div_quo = 0;
       div_rem = op_div_2;
@@ -110,11 +112,7 @@ module Divider (
           end
       end
     end
-  end
-
-  //correct
-  always @(*) begin
-      if(funct == (`FUNCT_DIV) begin
+    if(funct == (`FUNCT_DIV) begin
         if(operand_1[31] ^ operand_2[31] == 1'b1) begin
             div_quo = ~div_quo + 1'b1;
         end
@@ -132,6 +130,7 @@ module Divider (
           div_quo = div_quo;
           div_rem = div_rem;
       end
-    end
+      done = 1;
+  end
 
 endmodule

@@ -164,6 +164,7 @@ module Core(
   wire[`DATA_BUS] hi_read_data,lo_read_data；
   wire[`DATA_BUS] hi_write_data,lo_write_data;
   wire hilo_write_en;
+  wire request_from_ex;
 
   EX ex_stage(
     .hi_read_data           (hi_read_data),
@@ -186,6 +187,7 @@ module Core(
     .current_pc_addr_in     (idex_current_pc_addr),
 
     .ex_load_flag           (ex_ex_load_flag),
+    .stall_request          (request_from_ex),
 
     .mem_read_flag_out      (ex_mem_read_flag),
     .mem_write_flag_out     (ex_mem_write_flag),
@@ -443,6 +445,7 @@ module Core(
   // pipeline control
   PipelineController pipeline_controller(
     .request_from_id  (id_stall_request),
+    .request_from_ex  (request_from_ex),
     .stall_all        (stall),
     .stall_pc         (stall_pc_conn),
     .stall_if         (stall_if_conn),

@@ -8,8 +8,14 @@ module Adder(
   input       [`DATA_BUS]     operand_1,
   input       [`DATA_BUS]     operand_2,
   output      [`DATA_BUS]     result,
+  output                      overflow_flag
 );
 
+  wire overflow_flag = 
+          // op1 & op2 is positive, op1 + op2 is negative
+          ((!operand_1[31] && !operand_2[31] && result[31]) ||
+          // op1 & op2 is negative, op1 + op2 is negative
+          (operand_1[31] && operand_2[31] && !result[31])) ;
 
   always @(*) begin
       if (add_en) begin
