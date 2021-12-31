@@ -4,6 +4,13 @@
 `include "funct.v"
 
 module EX(
+  // from HILO stage
+  input       [`DATA_BUS]     hi_read_data,
+  input       [`DATA_BUS]     lo_read_data,
+  // to HILO stage
+  output      [`DATA_BUS]     hi_write_data,
+  output      [`DATA_BUS]     lo_write_data,
+  output                      hilo_write_en,
   // from ID stage
   input       [`FUNCT_BUS]    funct,
   input       [`SHAMT_BUS]    shamt,
@@ -34,242 +41,53 @@ module EX(
 
   // to ID stage
   assign ex_load_flag = mem_read_flag_in;
+
   // to MEM stage
   assign mem_read_flag_out = mem_read_flag_in;
   assign mem_write_flag_out = mem_write_flag_in;
   assign mem_sign_flag_out = mem_sign_flag_in;
   assign mem_sel_out = mem_sel_in;
   assign mem_write_data_out = mem_write_data_in;
+
   // to WB stage
   assign reg_write_en_out = reg_write_en_in && !mem_write_flag_in && !overflow_flag;
   assign reg_write_addr_out = reg_write_addr_in;
   assign current_pc_addr_out = current_pc_addr_in;
 
-  reg[`DATA_BUS] HI;
-  reg[`DATA_BUS] LO;
-  initial begin
-      HI <= 0;
-      LO <= 0;
-  end
-  // calculate the complement of operand_2
-  wire[`DATA_BUS] operand_2_mux =
-      (funct == `FUNCT_SUBU || funct == `FUNCT_SLT || funct == `FUNCT_SUB)
-        ? (~operand_2) + 1 : operand_2;
-
-  //if negative, complement of operand_1& operand_2
-  wire[`DATA_BUS] op1_c = (~operand_1) + 1;
-  wire[`DATA_BUS] op2_c = (~operand_2) + 1;
-
-  // sum of operand_1 & operand_2
-  wire[`DATA_BUS] result_sum = operand_1 + operand_2_mux;
 
   // overflow flag of operand_1 +/- operand_2
   wire overflow_flag = 
         funct == (`FUNCT_ADD || `FUNCT_ADDI || `FUNCT_SUB)?
           // op1 & op2 is positive, op1 + op2 is negative
-          ((!operand_1[31] && !operand_2[31] && result_sum[31]) ||
+          ((!operand_1[31] && !operand_2[31] && result[31]) ||
           // op1 & op2 is negative, op1 + op2 is negative
-          (operand_1[31] && operand_2[31] && !result_sum[31])) :0;
-
-  // flag of operand_1 < operand_2
-  wire operand_1_lt_operand_2 = funct == `FUNCT_SLT ?
-        // op1 is negative & op2 is positive
-        ((operand_1[31] && !operand_2[31]) ||
-          // op1 & op2 is positive, op1 - op2 is negative
-          (!operand_1[31] && !operand_2[31] && result_sum[31]) ||
-          // op1 & op2 is negative, op1 - op2 is negative
-          (operand_1[31] && operand_2[31] && result_sum[31]))
-      : (operand_1 < operand_2);
-
-    /*****************
-    ** MULT/MULTU   ***
-    ******************/
-
-  //乘数1：若为有符号乘法且该乘数为负数，则取其补码，否则不变
-  wire[`DATA_BUS] op_mul_1 = 
-          (funct == (`FUNCT_MULT) && operand_1[31])?
-          op1_c : operand_1;
-  //乘数2
-  wire[`DATA_BUS] op_mul_2 = 
-          (funct == (`FUNCT_MULT) && operand_2[31])?
-          op2_c : operand_2;
-
-  //(mult)temporary product of operand_1 & operand_2
-  wire[`DOUBLE_DATA_BUS] result_mul_temp = op_mul_1 * op_mul_2 ;
-  
-  wire[`DOUBLE_DATA_BUS] result_mul;
-  //correct the temporary product
-  always @(*) begin
-    result_mul = {32'h00000000,32'h00000000};
-    if(funct == (`FUNCT_MULT) begin
-      if(operand_1[31] ^ operand_2[31] == 1'b1) begin
-          result_mul = ~result_mul_temp + 1'b1;
-      end
-      else begin
-          result_mul = result_mul_temp;
-      end
-    end
-    else begin
-            result_mul = result_mul_temp;
-    end
-  end
+          (operand_1[31] && operand_2[31] && !result[31])) :0;
 
 
-/** 函数pos：确定操作数有效位数   ***/
-function [4:0] pos;
-  input [31:0] op_div_1;
-  reg [15:0] sel1;
-  reg [ 7:0] sel2;
-  reg [ 3:0] sel3;
-  reg [ 2:0] sel4;
-  begin
-	if(|op_div_1[31:16] == 0) begin
-		pos[4] = 0;
-		sel1 = op_div_1[15:0];
-		end
-	else begin
-		pos[4] = 1;
-		sel1 = op_div_1[31:16];
-	end
-	if(|sel1[15:8] == 1'b0) begin
-		pos[3] = 0;
-		sel2 = sel1[7:0];
-	end
-	else begin
-		pos[3] = 1;
-		sel2 = sel1[15:8];
-	end
-	if(|sel2[7:4] == 1'b0) begin
-		pos[2] = 0;
-		sel3 = sel2[3:0];
-	end
-	else begin
-		pos[2] = 1;
-		sel3 = sel2[7:4];
-	end
-	if(|sel3[3:2] == 1'b0) begin
-		pos[1] = 0;
-		sel4 = sel3[1:0];
-	end
-	else begin
-		pos[1] = 1;
-		sel4 = sel3[3:2];
-	end
-	if(|sel4[1] == 1'b0) begin
-		pos[0] = 0;                             
-	end
-	else begin
-		pos[0] = 1;
-	end
- end
-endfunction
-
-    /*****************
-    ** DIV/DIVU   ***
-    ******************/
-
-  wire [`REG_ADDR_BUS] div_shift_cnt;//记录移位数
-  wire [`DATA_BUS] div_quo = 0;//商，初值为0
-  wire [`DATA_BUS] div_rem = op_div_1;//余数，初值为被除数
-  wire [`DATA_BUS] div_temp = 0;//暂存中间结果
-  wire[`REG_ADDR_BUS] n_1;
-  wire[`REG_ADDR_BUS] n_2;
-  //被除数：若为有符号乘法且该乘数为负数，则取其补码，否则不变
-  wire[`DATA_BUS] op_div_1 = 
-          (funct == `FUNCT_DIV && operand_1[31])?
-          op1_c : operand_1;
-  //除数
-  wire[`DATA_BUS] op_div_2 = 
-          (funct == `FUNCT_DIV && operand_2[31])?
-          op2_c : operand_2;
-          
-  assign n_1 = pos(op_div_1);
-  assign n_2 = pos(op_div_2);
-
-
-  div_shift_cnt = n_1 - n_2;
-
-always @(*) begin
-  if (op_div_1 < op_div_2) begin
-    div_quo = 0;
-    div_rem = op_div_2;
-  end
-  else if (op_div_1 == op_div_2) begin
-    div_quo = 1;
-    div_rem = 0;
-  end
-  //除法移位实现
-  else begin
-    if (n_1 == n_2)begin
-      div_quo = 1;
-      div_rem = op_div_1 - op_div_2;
-    end
-    else 
-      while (n_1 > n_2)begin
-        div_temp = div_rem - (op_div_2 << div_shift_cnt)
-        //余数 > 移位后的数
-        if (!div_temp[31]) begin
-            div_quo = div_quo + (1 << div_shift_cnt);
-            div_rem = div_temp;
-            div_shift_cnt = div_shift_cnt - 1;
-        end
-        else begin
-          break;
-        end
-    end
-  end
-end
-
-  //correct
-always @(*) begin
-    if(funct == (`FUNCT_DIV) begin
-      if(operand_1[31] ^ operand_2[31] == 1'b1) begin
-          div_quo = ~div_quo + 1'b1;
-      end
-      else begin
-          div_quo = div_quo;
-      end
-      if(operand_2[31])begin
-        div_rem = ~div_rem + 1'b1;
-      end
-      else begin
-        div_rem = div_rem;
-      end
-    end
-    else begin
-        div_quo = div_quo;
-        div_rem = div_rem;
-    end
-  end
-
- /*****************
-    ** 结束乘除运算   ***
-    ******************/
+  assign hilo_write_en = ( funct == `FUNCT_MTHI || funct == `FUNCT_MTLO ) ? 1 : 0;
 
   // calculate result
   always @(*) begin
     case (funct)
-      // jump with link & logic
-      `FUNCT_JALR, `FUNCT_OR: result <= operand_1 | operand_2;
-      `FUNCT_AND: result <= operand_1 & operand_2;
-      `FUNCT_XOR: result <= operand_1 ^ operand_2;
-      // comparison
-      `FUNCT_SLT, `FUNCT_SLTU: result <= {31'b0, operand_1_lt_operand_2};
       // arithmetic
       `FUNCT_ADD,`FUNCT_ADDU, 
       `FUNCT_SUB,`FUNCT_SUBU: result <= result_sum;
-      `FUNCT_MULT,`FUNCT_MULTU: 
-          HI <= result_mul[63:32];
-          LO <= result_mul[31:0];
-      `FUNCT_DIV,`FUNCT_DIVU: 
-          HI <= div_rem;
-          LO <= div_quo;
-      // shift
-      `FUNCT_SLL: result <= operand_2 << shamt;
-      `FUNCT_SLLV: result <= operand_2 << operand_1[4:0];
-      `FUNCT_SRLV: result <= operand_2 >> operand_1[4:0];
-      `FUNCT_SRAV: result <= ({32{operand_2[31]}} << (6'd32 - {1'b0, operand_1[4:0]})) | operand_2 >> operand_1[4:0];
-      default: result <= 0;
+      // HILO
+      `FUNCT_MFHI: result <= hi_read_data;
+      `FUNCT_MFLO: result <= hi_read_data;
+      `FUNCT_MTHI: begin
+        hi_write_data <= operand_1;
+        lo_write_data <= lo_read_data;
+        result <= 0;
+      end
+      `FUNCT_MTLO: begin
+        hi_write_data <= hi_read_data;
+        lo_write_data <= operand_1;
+        result <= 0;
+      end
+      default: begin
+        result <= 0;
+      end
     endcase
   end
 

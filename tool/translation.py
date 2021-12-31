@@ -114,7 +114,7 @@ class Translation():
             else:
                 result = result.append( "00000" )                        # 标志为1则为零号寄存器
 
-        temp = [ None for _ in range(len(orders))]
+        temp = [ None for _ in range(len(orders))]                       # 初始化一个空list
 
         for order,reg in zip(orders,result):
             temp[ int( order ) - 1 ] = reg

@@ -15,6 +15,9 @@ module WB(
   input                       reg_write_en_in,
   input       [`REG_ADDR_BUS] reg_write_addr_in,
   input       [`ADDR_BUS]     current_pc_addr_in,
+  input       [`DATA_BUS]     hi_write_data_in,
+  input       [`DATA_BUS]     lo_write_data_in,
+  input                       hilo_write_en_in,
   // regfile control
   output  reg [`DATA_BUS]     result_out,
   output                      reg_write_en_out,
@@ -22,6 +25,10 @@ module WB(
   // debug signals
   output                      debug_reg_write_en,
   output      [`ADDR_BUS]     debug_pc_addr_out
+  //HILO
+  output      [`DATA_BUS]     hi_write_data_out,
+  output      [`DATA_BUS]     lo_write_data_out,
+  output                      hilo_write_en_out,
 );
 
   assign reg_write_en_out = reg_write_en_in;
@@ -29,6 +36,10 @@ module WB(
   assign debug_reg_write_en = reg_write_en_out;
   assign debug_pc_addr_out = current_pc_addr_in;
 
+  assign hi_write_data_out = hi_write_data_in;
+  assign lo_write_data_out = lo_write_data_in;
+  assign hilo_write_en_out = hilo_write_en_in;
+  
   wire[`ADDR_BUS] address = result_in;
 
   // generate result_out signal

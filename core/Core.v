@@ -3,9 +3,9 @@
 `include "bus.v"
 
 module Core(
-  input                   clk,
-  input                   rst,
-  input                   stall,
+  input clk,
+  input rst,
+  input stall,
   // ROM control
   output  [`MEM_SEL_BUS]  rom_write_en,
   output  [`ADDR_BUS]     rom_addr,
@@ -161,8 +161,17 @@ module Core(
   wire ex_reg_write_en, exmem_reg_write_en;
   wire[`REG_ADDR_BUS] ex_reg_write_addr, exmem_reg_write_addr;
   wire[`ADDR_BUS] ex_current_pc_addr, exmem_current_pc_addr;
+  wire[`DATA_BUS] hi_read_data,lo_read_data；
+  wire[`DATA_BUS] hi_write_data,lo_write_data;
+  wire hilo_write_en;
 
   EX ex_stage(
+    .hi_read_data           (hi_read_data),
+    .lo_read_data           (lo_read_data),
+    .hi_write_data          (hi_write_data),
+    .lo_write_data          (lo_write_data),
+    .hilo_write_en          (hilo_write_en),
+
     .funct                  (idex_funct),
     .shamt                  (idex_shamt),
     .operand_1              (idex_operand_1),
@@ -180,7 +189,7 @@ module Core(
 
     .mem_read_flag_out      (ex_mem_read_flag),
     .mem_write_flag_out     (ex_mem_write_flag),
-    .mem_sign_flag_out       (ex_mem_sign_flag),
+    .mem_sign_flag_out      (ex_mem_sign_flag),
     .mem_sel_out            (ex_mem_sel),
     .mem_write_data_out     (ex_mem_write_data),
 
@@ -190,6 +199,9 @@ module Core(
     .current_pc_addr_out    (ex_current_pc_addr)
   );
 
+  wire[`DATA_BUS]  ex_hi_write_data,ex_lo_write_data;
+  wire             ex_hilo_write_en;
+  
   EXMEM exmem(
     .clk                    (clk),
     .rst                    (rst),
@@ -198,7 +210,7 @@ module Core(
 
     .mem_read_flag_in       (ex_mem_read_flag),
     .mem_write_flag_in      (ex_mem_write_flag),
-    .mem_sign_flag_in        (ex_mem_sign_flag),
+    .mem_sign_flag_in       (ex_mem_sign_flag),
     .mem_sel_in             (ex_mem_sel),
     .mem_write_data_in      (ex_mem_write_data),
     .result_in              (ex_result),
@@ -206,15 +218,23 @@ module Core(
     .reg_write_addr_in      (ex_reg_write_addr),
     .current_pc_addr_in     (ex_current_pc_addr),
 
+    .hi_write_data_in       (hi_write_data),
+    .lo_write_data_in       (lo_write_data),
+    .hilo_write_en_In       (hilo_write_en),
+
     .mem_read_flag_out      (exmem_mem_read_flag),
     .mem_write_flag_out     (exmem_mem_write_flag),
-    .mem_sign_flag_out       (exmem_mem_sign_flag),
+    .mem_sign_flag_out      (exmem_mem_sign_flag),
     .mem_sel_out            (exmem_mem_sel),
     .mem_write_data_out     (exmem_mem_write_data),
     .result_out             (exmem_result),
     .reg_write_en_out       (exmem_reg_write_en),
     .reg_write_addr_out     (exmem_reg_write_addr),
-    .current_pc_addr_out    (exmem_current_pc_addr)
+    .current_pc_addr_out    (exmem_current_pc_addr),
+
+    .hi_write_data_out      (ex_hi_write_data),
+    .lo_write_data_out      (ex_lo_write_data),
+    .hilo_write_en_out      (ex_hilo_write_en)
   );
 
 
@@ -227,11 +247,13 @@ module Core(
   wire mem_reg_write_en, memwb_reg_write_en;
   wire[`REG_ADDR_BUS] mem_reg_write_addr, memwb_reg_write_addr;
   wire[`ADDR_BUS] mem_current_pc_addr, memwb_current_pc_addr;
+  wire[`DATA_BUS]  mem_hi_write_data,mem_lo_write_data;
+  wire             mem_hilo_write_en;
 
   MEM mem_stage(
     .mem_read_flag_in       (exmem_mem_read_flag),
     .mem_write_flag_in      (exmem_mem_write_flag),
-    .mem_sign_flag_in   (exmem_mem_sign_flag),
+    .mem_sign_flag_in       (exmem_mem_sign_flag),
     .mem_sel_in             (exmem_mem_sel),
     .mem_write_data         (exmem_mem_write_data),
 
@@ -239,6 +261,10 @@ module Core(
     .reg_write_en_in        (exmem_reg_write_en),
     .reg_write_addr_in      (exmem_reg_write_addr),
     .current_pc_addr_in     (exmem_current_pc_addr),
+
+    .hi_write_data_in       (ex_hi_write_data),
+    .lo_write_data_in       (ex_lo_write_data),
+    .hilo_write_en_In       (ex_hilo_write_en),
 
     .ram_en                 (ram_en),
     .ram_write_en           (ram_write_en),
@@ -249,13 +275,20 @@ module Core(
 
     .mem_read_flag_out      (mem_mem_read_flag),
     .mem_write_flag_out     (mem_mem_write_flag),
-    .mem_sign_flag_out  (mem_mem_sign_flag),
+    .mem_sign_flag_out      (mem_mem_sign_flag),
     .mem_sel_out            (mem_mem_sel),
     .result_out             (mem_result),
     .reg_write_en_out       (mem_reg_write_en),
     .reg_write_addr_out     (mem_reg_write_addr),
-    .current_pc_addr_out    (mem_current_pc_addr)
+    .current_pc_addr_out    (mem_current_pc_addr),
+
+    .hi_write_data_out      (mem_hi_write_data),
+    .lo_write_data_out      (mem_lo_write_data),
+    .hilo_write_en_out      (mem_hilo_write_en)
   );
+
+  wire[`DATA_BUS]  wb_hi_write_data,wb_lo_write_data;
+  wire             wb_hilo_write_en;
 
   MEMWB memwb(
     .clk                    (clk),
@@ -267,23 +300,31 @@ module Core(
 
     .mem_read_flag_in       (mem_mem_read_flag),
     .mem_write_flag_in      (mem_mem_write_flag),
-    .mem_sign_flag_in   (mem_mem_sign_flag),
+    .mem_sign_flag_in       (mem_mem_sign_flag),
     .mem_sel_in             (mem_mem_sel),
     .result_in              (mem_result),
     .reg_write_en_in        (mem_reg_write_en),
     .reg_write_addr_in      (mem_reg_write_addr),
     .current_pc_addr_in     (mem_current_pc_addr),
 
+    .hi_write_data_in       (mem_hi_write_data),
+    .lo_write_data_in       (mem_lo_write_data),
+    .hilo_write_en_In       (mem_hilo_write_en),
+
     .ram_read_data_out      (memwb_ram_read_data),
 
     .mem_read_flag_out      (memwb_mem_read_flag),
     .mem_write_flag_out     (memwb_mem_write_flag),
-    .mem_sign_flag_out  (memwb_mem_sign_flag),
+    .mem_sign_flag_out      (memwb_mem_sign_flag),
     .mem_sel_out            (memwb_mem_sel),
     .result_out             (memwb_result),
     .reg_write_en_out       (memwb_reg_write_en),
     .reg_write_addr_out     (memwb_reg_write_addr),
-    .current_pc_addr_out    (memwb_current_pc_addr)
+    .current_pc_addr_out    (memwb_current_pc_addr),
+
+    .hi_write_data_out      (wb_hi_write_data),
+    .lo_write_data_out      (wb_lo_write_data),
+    .hilo_write_en_out      (wb_hilo_write_en)
   );
 
 
@@ -291,6 +332,8 @@ module Core(
   wire[`DATA_BUS] wb_result;
   wire wb_reg_write_en;
   wire[`REG_ADDR_BUS] wb_reg_write_addr;
+  wire to_hi_write_data,to_lo_write_data;
+  wire to_hilo_write_en;
 
   assign debug_reg_write_addr = wb_reg_write_addr;
   assign debug_reg_write_data = wb_result;
@@ -300,7 +343,7 @@ module Core(
 
     .mem_read_flag      (memwb_mem_read_flag),
     .mem_write_flag     (memwb_mem_write_flag),
-    .mem_sign_flag  (memwb_mem_sign_flag),
+    .mem_sign_flag      (memwb_mem_sign_flag),
     .mem_sel            (memwb_mem_sel),
 
     .result_in          (memwb_result),
@@ -308,12 +351,20 @@ module Core(
     .reg_write_addr_in  (memwb_reg_write_addr),
     .current_pc_addr_in (memwb_current_pc_addr),
 
+    .hi_write_data_in   (wb_hi_write_data),
+    .lo_write_data_in   (wb_lo_write_data),
+    .hilo_write_en_In   (wb_hilo_write_en),
+
     .result_out         (wb_result),
     .reg_write_en_out   (wb_reg_write_en),
     .reg_write_addr_out (wb_reg_write_addr),
 
     .debug_reg_write_en (debug_reg_write_en),
     .debug_pc_addr_out  (debug_pc_addr)
+
+    .hi_write_data_out  (to_hi_write_data),
+    .lo_write_data_out  (to_lo_write_data),
+    .hilo_write_en_out  (to_hilo_write_en)
   );
 
 
@@ -363,6 +414,31 @@ module Core(
     .read_data_2              (id_reg_data_2)
   );
 
+
+  wire[`DATA_BUS] hi_to_proxy_data,lo_to_proxy_data;
+
+  HILO hilo(
+    .clk                      (clk),
+    .rst                      (rst),
+    .write_en                 (to_hilo_write_en),
+    .hi_write_data            (to_hi_write_data),
+    .lo_write_data            (to_lo_write_data),
+    .hi_read_data             (hi_to_proxy_data),
+    .lo_read_data             (lo_to_proxy_data)
+  );
+
+  HILOReadProxy hilo_read_proxy(
+    .hi_input_data            (hi_to_proxy_data),
+    .lo_input_data            (lo_to_proxy_data),
+    .mem_hilo_write_en        (ex_hilo_write_en),
+    .mem_hi_write_data        (ex_hi_write_data),
+    .mem_lo_write_data        (ex_lo_write_data),
+    .wb_hilo_write_en         (wb_hilo_write_en),
+    .wb_hi_write_data         (wb_hi_write_data),
+    .wb_lo_write_data         (wb_lo_write_data),
+    .hi_output_data           (hi_read_data),
+    .lo_output_data           (lo_read_data)
+  );
 
   // pipeline control
   PipelineController pipeline_controller(
