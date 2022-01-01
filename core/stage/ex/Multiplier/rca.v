@@ -11,7 +11,7 @@ wire [`DATA_BUS_WIDTH:0] temp;
 assign temp[0] = 0;
 
 genvar i;
-for( i=0; i<width; i=i+1) begin
+for( i=0; i<`DATA_BUS_WIDTH; i=i+1) begin
     full_adder u_full_adder(
         .a      (   op1[i]     ),
         .b      (   op2[i]     ),
