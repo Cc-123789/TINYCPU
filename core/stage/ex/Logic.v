@@ -1,9 +1,12 @@
+`include "bus.v"
+`include "funct.v"
+
 module Logic (
   input       [`FUNCT_BUS]        funct,
   input                           logic_en,
   input       [`DATA_BUS]         operand_1,
   input       [`DATA_BUS]         operand_2,
-  output      [`DATA_BUS]         result
+  output reg  [`DATA_BUS]         result
 );
 
   wire sub_result = operand_1 - operand_2;

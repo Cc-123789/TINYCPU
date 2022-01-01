@@ -7,8 +7,8 @@ module mux(
     input      [`DOUBLE_DATA_BUS]   mult_result,
     input      [`DOUBLE_DATA_BUS]   div_result,
     input      [4:0]                select,
-    output     [`DATA_BUS]          result,
-    output     [`DOUBLE_DATA_BUS]   mult_div_result
+    output     reg [`DATA_BUS]          result,
+    output     reg [`DOUBLE_DATA_BUS]   mult_div_result
 );
 
     always @(*) begin

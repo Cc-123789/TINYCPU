@@ -1,3 +1,6 @@
+`include "bus.v"
+`include "funct.v"
+
 module Hilo_Gen (
   input       [`FUNCT_BUS]    funct,
   input                       hilo_en,
@@ -8,10 +11,10 @@ module Hilo_Gen (
   input       [`DATA_BUS]     lo_read_data,
   input       [`DATA_BUS]     operand_1,
   // to HILO stage
-  output      [`DATA_BUS]     hi_write_data,
-  output      [`DATA_BUS]     lo_write_data,
-  output                      hilo_write_en,
-  output      [`DATA_BUS]     result
+  output  reg    [`DATA_BUS]     hi_write_data,
+  output  reg    [`DATA_BUS]     lo_write_data,
+  output  reg                    hilo_write_en,
+  output  reg    [`DATA_BUS]     result
 );
 
  // calculate result
@@ -40,25 +43,16 @@ module Hilo_Gen (
             end
         endcase
       end
+      else if ( mult_div_done ) begin
+      hilo_write_en <= 1;
+      hi_write_data <= mult_div_result[63:32];
+      lo_write_data <= mult_div_result[31:0];
+    end
       else begin
         hilo_write_en <= 0;
         hi_write_data <= 0;
         lo_write_data <= 0;
         result <= 0;
       end
-  end
-
-  always @(*) begin
-    if ( mult_div_done ) begin
-      hilo_write_en <= 1;
-      hi_write_data <= mult_div_result[63:32];
-      lo_write_data <= mult_div_result[31:0];
-    end
-    else begin
-      hilo_write_en <= 0;
-      hi_write_data <= 0;
-      lo_write_data <= 0;
-      result <= 0;
-    end
   end
 endmodule

@@ -11,8 +11,8 @@ module HILO(
     reg [`DATA_BUS] hi;
     reg [`DATA_BUS] lo;
 
-    assign hi_o = hi;
-    assign lo_o = lo;
+    assign hi_read_data = hi;
+    assign lo_read_data = lo;
 
     always @(posedge clk) begin
         if(rst) begin

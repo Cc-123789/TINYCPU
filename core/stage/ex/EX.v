@@ -44,9 +44,8 @@ module EX(
 );
 
   wire mult_done , div_done;
-  wire overflow_flag,add_overflow_flag,mul_overflow_flag;
  
-  assign overflow_flag = add_overflow_flag || mul_overflow_flag;
+  assign overflow_flag;
 
   // to ID stage
   assign ex_load_flag = mem_read_flag_in;
@@ -93,7 +92,7 @@ module EX(
     .operand_1(operand_1),
     .operand_2(operand_2),
     .result(adder_result),
-    .overflow_flag(add_overflow_flag)
+    .overflow_flag(overflow_flag)
   );
 
 
@@ -103,8 +102,7 @@ module EX(
     .operand_1(operand_1),
     .operand_2(operand_2),
     .done(mult_done),
-    .result_mul(mult_result),
-    .overflow_flag(mul_overflow_flag)
+    .result_mul(mult_result)
   );
 
   Divider divider(
