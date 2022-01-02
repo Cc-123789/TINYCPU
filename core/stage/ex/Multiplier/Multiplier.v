@@ -2,7 +2,6 @@
 `include "funct.v"
  
  module Multiplier (
-  input       [`FUNCT_BUS]        funct,
   input                           mul_en,
   input       [`DATA_BUS]         op1,
   input       [`DATA_BUS]         op2,

@@ -97,7 +97,6 @@ module EX(
 
 
   Multiplier multiplier(
-    .funct(funct),
     .mul_en(mul_en),
     .operand_1(operand_1),
     .operand_2(operand_2),
@@ -106,12 +105,11 @@ module EX(
   );
 
   Divider divider(
-    .funct(funct),
     .div_en(div_en),
     .operand_1(operand_1),
     .operand_2(operand_2),
     .done(div_done),
-    .result_div(div_result)
+    .result(div_result)
   );
 
   Logic logic(
