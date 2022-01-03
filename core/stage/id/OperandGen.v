@@ -20,7 +20,7 @@ module OperandGen(
 
   // extract immediate from instruction
   wire[`DATA_BUS] zero_ext_imm_hi = {imm, 16'b0};
-  wire[`DATA_BUS] sign_ext_imm = {{16{imm[15]}}, imm};
+  wire[`DATA_BUS] sign_ext_imm = { {16{imm[15]}},  imm };
 
   // generate operand_1
   always @(*) begin

@@ -53,8 +53,6 @@ module PC(
       // pc & rom_addr stall
       next_pc <= pc;
   end
-
-
   end
 
 

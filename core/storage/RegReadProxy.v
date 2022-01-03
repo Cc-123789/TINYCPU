@@ -37,15 +37,17 @@ module RegReadProxy(
       ( ex_load_flag && read_en_2 && read_addr_2 == reg_write_addr_from_ex) ||
       ( mem_load_flag && read_en_2 && read_addr_2 == reg_write_addr_from_mem);
 
+  assign ex_flag = ( reg_write_addr_from_ex != 0 );
+  assign mem_flag = ( reg_write_addr_from_mem != 0 );
   // generate output read_data_1
   always @(*) begin
     if (read_en_1) begin
-      if (reg_write_en_from_ex &&
-          read_addr_1 == reg_write_addr_from_ex) begin
+      if ( reg_write_en_from_ex &&
+          read_addr_1 == reg_write_addr_from_ex && ex_flag) begin
         read_data_1 <= data_from_ex;
       end
       else if (reg_write_en_from_mem &&
-          read_addr_1 == reg_write_addr_from_mem) begin
+          read_addr_1 == reg_write_addr_from_mem && mem_flag) begin
         read_data_1 <= data_from_mem;
       end
       else begin
@@ -61,11 +63,11 @@ module RegReadProxy(
   always @(*) begin
     if (read_en_2) begin
       if (reg_write_en_from_ex &&
-          read_addr_2 == reg_write_addr_from_ex) begin
+          read_addr_2 == reg_write_addr_from_ex && ex_flag) begin
         read_data_2 <= data_from_ex;
       end
       else if (reg_write_en_from_mem &&
-          read_addr_2 == reg_write_addr_from_mem) begin
+          read_addr_2 == reg_write_addr_from_mem && mem_flag) begin
         read_data_2 <= data_from_mem;
       end
       else begin

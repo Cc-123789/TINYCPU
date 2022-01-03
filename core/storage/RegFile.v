@@ -42,10 +42,10 @@ module RegFile(
     if (rst) begin
       read_data_1 <= 0;
     end
-    else if (read_addr_1 == write_addr && write_en && read_en_1) begin
-      // forward data to output
-      read_data_1 <= write_data;
-    end
+    // else if (read_addr_1 == write_addr && write_en && read_en_1) begin
+    //   // forward data to output
+    //   read_data_1 <= write_data;
+    // end
     else if (read_en_1) begin
       read_data_1 <= registers[read_addr_1];
     end
@@ -59,10 +59,10 @@ module RegFile(
     if (rst) begin
       read_data_2 <= 0;
     end
-    else if (read_addr_2 == write_addr && write_en && read_en_2) begin
-      // forward data to output
-      read_data_2 <= write_data;
-    end
+    // else if (read_addr_2 == write_addr && write_en && read_en_2) begin
+    //   // forward data to output
+    //   read_data_2 <= write_data;
+    // end
     else if (read_en_2) begin
       read_data_2 <= registers[read_addr_2];
     end

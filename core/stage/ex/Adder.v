@@ -11,13 +11,13 @@ module Adder(
   output                      overflow_flag
 );
 
- assign overflow_flag = 
+ assign overflow_flag = add_en ?
           // op1 & op2 is positive, op1 + op2 is negative
           (!operand_1[31] && !operand_2[31] && result[31]) ||
           // op1 & op2 is negative, op1 + op2 is positive
-          (operand_1[31] && operand_2[31] && !result[31]) ;
+          (operand_1[31] && operand_2[31] && !result[31]) : 0 ;
 
-  wire op2;
+  wire[`DATA_BUS] op2;
   assign op2 = ( funct == `FUNCT_SUBU || funct == `FUNCT_SUB ) ? (~operand_2) + 1 : operand_2;
   
   always @(*) begin
