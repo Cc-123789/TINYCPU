@@ -4,19 +4,13 @@ module cas (
     input  cin,
     input  op1,
     input  op2,
-    output reg result,
-    output reg cout
+    output result,
+    output cout
 );
-//    assign 
-   
 
-    always @(*) begin
-     result = op1 ^ op2 ^ cin ; 
-        if ( add_sub_en_in ) begin
-            cout <= ( ~op1 & op2 ) | ( ~op1 & cin ) | ( op2 & cin );
-        end
-        else begin
-            cout <=  op1 & op2 | ( cin & ( op1 ^ op2 ) );            
-        end
-    end
+    assign   result = op1 ^ op2 ^ cin ; 
+    assign   cout = add_sub_en_in ? 
+                    ( ~op1 & op2 ) | ( ~op1 & cin ) | ( op2 & cin ) 
+                    : op1 & op2 | ( cin & ( op1 ^ op2 ) );
+                    
 endmodule

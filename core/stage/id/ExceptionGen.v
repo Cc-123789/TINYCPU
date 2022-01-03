@@ -7,8 +7,6 @@
 
 module ExceptionGen (
 	input   	[`INST_BUS]		inst,
-	// input       [`REG_ADDR_BUS] rs,
-	// input       [`REG_ADDR_BUS] rt,
 	input		[`INST_OP_BUS]	op,
 	input       [`FUNCT_BUS]    funct,
 

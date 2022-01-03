@@ -14,9 +14,14 @@ module MEM(
   input                       reg_write_en_in,
   input       [`REG_ADDR_BUS] reg_write_addr_in,
   input       [`ADDR_BUS]     current_pc_addr_in,
+  // HI & LO control
   input       [`DATA_BUS]     hi_write_data_in,
   input       [`DATA_BUS]     lo_write_data_in,
   input                       hilo_write_en_in,
+  //cp0
+  input                       cp0_write_en_in,
+  input       [`DATA_BUS]     cp0_write_data_in,
+  input       [`CP0_ADDR_BUS] cp0_addr_in,
   // RAM control signals
   output                      ram_en,
   output      [`MEM_SEL_BUS]  ram_write_en,
@@ -34,11 +39,15 @@ module MEM(
   
   output                      reg_write_en_out,
   output      [`REG_ADDR_BUS] reg_write_addr_out,
-  output      [`ADDR_BUS]     current_pc_addr_out
-
+  output      [`ADDR_BUS]     current_pc_addr_out,
+  // HI & LO control
   output      [`DATA_BUS]     hi_write_data_out,
   output      [`DATA_BUS]     lo_write_data_out,
   output                      hilo_write_en_out,
+  // cp0
+  output                      cp0_write_en_out,
+  output      [`DATA_BUS]     cp0_write_data_out,
+  output      [`CP0_ADDR_BUS] cp0_addr_out
 );
 
   // internal ram_write_sel control signal
@@ -55,6 +64,10 @@ module MEM(
   assign reg_write_en_out = reg_write_en_in;
   assign reg_write_addr_out = reg_write_addr_in;
   assign current_pc_addr_out = current_pc_addr_in;
+
+  assign cp0_write_en_out = cp0_write_en_in;
+  assign cp0_write_data_out = cp0_write_data_in;
+  assign cp0_addr_out = cp0_addr_in;
 
   wire[`ADDR_BUS] address = result_in;
 
@@ -119,7 +132,7 @@ module MEM(
         case (address[1:0])
           2'b00: ram_write_data <= mem_write_data;
           2'b10: ram_write_data <= mem_write_data << 16;
-          default: ram_write_sel <= 4'b0000;
+          default: ram_write_data <= 0;
         endcase
       end
       else if (mem_sel_in == 4'b1111) begin

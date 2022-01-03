@@ -2,6 +2,7 @@
 
 `include "bus.v"
 `include "cp0def.v"
+`include "opcode.v"
 
 module CP0Gen (
     input       [`INST_BUS]         inst,

@@ -3,13 +3,14 @@
 
 module Logic (
   input       [`FUNCT_BUS]        funct,
+  input       [`SHAMT_BUS]        shamt,
   input                           logic_en,
   input       [`DATA_BUS]         operand_1,
   input       [`DATA_BUS]         operand_2,
   output reg  [`DATA_BUS]         result
 );
 
-  wire sub_result = operand_1 - operand_2;
+  wire[`DATA_BUS] sub_result = operand_1 - operand_2;
 
   // flag of operand_1 < operand_2
   wire operand_1_lt_operand_2 = funct == `FUNCT_SLT ?

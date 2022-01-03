@@ -6,6 +6,9 @@
 module PC(
   input                       clk,
   input                       rst,
+  // exc
+  input                       flush,
+  input       [`ADDR_BUS]     exc_pc,
   // stall signal
   input                       stall_pc,
   // branch control
@@ -28,14 +31,17 @@ module PC(
     if ( rst ) begin
       pc <= `INIT_PC - 4;
     end
-    else if (!stall_pc) begin
+     else if (flush || !stall_pc) begin
       pc <= next_pc;
     end
   end
 
   // generate value of next PC
   always @(*) begin
-    if (!stall_pc) begin
+    if (flush) begin
+      next_pc <= exc_pc;
+    end
+    else if (!stall_pc) begin
       if (branch_flag) begin
         next_pc <= branch_addr;
       end

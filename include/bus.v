@@ -37,4 +37,11 @@
 `define MEM_SEL_BUS             3:0
 `define MEM_SEL_BUS_WIDTH       4
 
+// coprocessor address bus
+`define CP0_ADDR_BUS            7:0
+`define CP0_ADDR_BUS_WIDTH      8
+
+// exception type bus
+`define EXC_TYPE_BUS            3:0
+`define EXC_TYPE_BUS_WIDTH      4
 `endif  // TINYMIPS_BUS_V_

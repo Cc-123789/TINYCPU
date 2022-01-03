@@ -27,6 +27,17 @@ module EX(
 
   input                           mult_div_done,
   output                          stall_request,
+  // cp0 signal
+  input                           cp0_write_en_in,
+  input                           cp0_read_en_in,
+  input       [`CP0_ADDR_BUS]     cp0_addr_in,
+  input       [`DATA_BUS]         cp0_write_data_in,
+  input       [`DATA_BUS]         cp0_read_data_in,
+  // exception signal
+  input                           eret_flag_in,
+  input                           syscall_flag_in,
+  input                           break_flag_in,
+  input                           delayslot_flag_in,
 
   // to ID stage (solve data hazards)
   output                      ex_load_flag,
@@ -40,13 +51,25 @@ module EX(
   output      [`DATA_BUS]     result,
   output                      reg_write_en_out,
   output      [`REG_ADDR_BUS] reg_write_addr_out,
-  output      [`ADDR_BUS]     current_pc_addr_out
+  output      [`ADDR_BUS]     current_pc_addr_out,
+    // cp0 signal
+  output                          cp0_write_en_out,
+  output      [`DATA_BUS]         cp0_write_data_out,
+  output      [`CP0_ADDR_BUS]     cp0_addr_out,
+  // exception signal
+  output                          eret_flag_out,
+  output                          syscall_flag_out,
+  output                          break_flag_out,
+  output                          delayslot_flag_out
 );
 
   wire mult_done , div_done;
- 
-  assign overflow_flag;
-
+  wire overflow_flag;
+  wire add_en,mul_en,div_en,logic_en,hilo_en;
+  wire[`DOUBLE_DATA_BUS] mult_result,div_result;
+  wire[`DATA_BUS] adder_result,logic_reesult,hilo_result;
+  reg [4:0] select;
+  
   // to ID stage
   assign ex_load_flag = mem_read_flag_in;
 
@@ -65,21 +88,28 @@ module EX(
   assign stall_request = ~mult_div_done && ( div_en || mul_en );
   assign mult_div_done = ( div_en || mul_en ) && ( mult_done || div_done );
   
-  reg [4:0] select；
+  // to cp0
+  assign cp0_write_en_out = cp0_write_en_in;
+  assign cp0_write_data_out = cp0_write_data_in;
+  assign cp0_addr_out = cp0_addr_in;
+  // exception
+  assign eret_flag_out = eret_flag_in;
+  assign syscall_flag_out = syscall_flag_in;
+  assign break_flag_out = break_flag_in;
+  assign delayslot_flag_out = delayslot_flag_in;
 
   initial begin
     select <= 5'b0;
   end
 
-  wire add_en,mul_en,div_en,logic_en,hilo_en;
-  wire[`DOUBLE_DATA_BUS] mult_result,div_result;
-  wire[`DATA_BUS] adder_result,logic_reesult,hilo_result;
+
   assign { hilo_en,logic_en,div_en,mul_en,add_en } = select;
 
-  MUX mux(
+  Mux mux(
     .adder_result(adder_result),
     .mult_result(mult_result),
     .div_result(div_result),
+    .hilo_result(hilo_result),
     .logic_reesult(logic_result),
     .select(select),
     .result(result),
@@ -98,8 +128,8 @@ module EX(
 
   Multiplier multiplier(
     .mul_en(mul_en),
-    .operand_1(operand_1),
-    .operand_2(operand_2),
+    .op1(operand_1),
+    .op2(operand_2),
     .done(mult_done),
     .result_mul(mult_result)
   );
@@ -114,6 +144,7 @@ module EX(
 
   Logic logic(
     .funct(funct),
+    .shamt(shamt),
     .logic_en(logic_en),
     .operand_1(operand_1),
     .operand_2(operand_2),
@@ -136,7 +167,6 @@ module EX(
 
  // calculate result
   always @(*) begin
-    if ( !stall_ex ) begin
       case (funct)
         // arithmetic
         `FUNCT_ADD,`FUNCT_ADDU, 
@@ -146,7 +176,7 @@ module EX(
         `FUNCT_MTHI,`FUNCT_MTLO: select <= 5'b10000;
         // logic 
         `FUNCT_JALR, 
-        `FUNCT_OR,`FUNCT_AND: `FUNCT_XOR,
+        `FUNCT_OR,`FUNCT_AND,`FUNCT_XOR,
         `FUNCT_SLT,`FUNCT_SLL ,`FUNCT_SLLV,`FUNCT_SRLV,`FUNCT_SRAV: select <= 5'b01000;
         // multiplier
         `FUNCT_MULT : select <= 5'b00010;
@@ -155,8 +185,7 @@ module EX(
         default: begin
           select <= 0;
         end
-      endcase      
-    end
+      endcase
   end
 
 endmodule // EX

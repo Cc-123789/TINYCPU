@@ -1,6 +1,6 @@
 `include "bus.v"
 
-module mux(
+module Mux(
     input      [`DATA_BUS]          adder_result,
     input      [`DATA_BUS]          logic_reesult,
     input      [`DATA_BUS]          hilo_result,

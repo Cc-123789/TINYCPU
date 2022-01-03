@@ -6,7 +6,7 @@ module Hilo_Gen (
   input                       hilo_en,
   input                       mult_div_done,
   // from HILO stage
-  input       [`DOUBLE_DATA_BUS]  mult_div_result
+  input       [`DOUBLE_DATA_BUS]  mult_div_result,
   input       [`DATA_BUS]     hi_read_data,
   input       [`DATA_BUS]     lo_read_data,
   input       [`DATA_BUS]     operand_1,
@@ -25,7 +25,7 @@ module Hilo_Gen (
                 hilo_write_en <= 0;
                 result <= hi_read_data;
             end
-            `FUNCT_MFLO: begin:
+            `FUNCT_MFLO: begin
                 hilo_write_en <= 0;
                 result <= lo_read_data;            
             end

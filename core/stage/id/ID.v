@@ -12,6 +12,8 @@ module ID(
   // load related signals
   input                   load_related_1,
   input                   load_related_2,
+  // delayslot flag
+  input                   delayslot_flag_in,
   // regfile channel #1
   output                  reg_read_en_1,
   output  [`REG_ADDR_BUS] reg_addr_1,
@@ -39,7 +41,18 @@ module ID(
   // to WB stage (write back to regfile)
   output                  reg_write_en,
   output  [`REG_ADDR_BUS] reg_write_addr,
-  output  [`ADDR_BUS]     current_pc_addr
+  output  [`ADDR_BUS]     current_pc_addr,
+  // to CP0 
+  output                  cp0_write_en,
+  output                  cp0_read_en,
+  output  [`CP0_ADDR_BUS] cp0_addr,
+  output  [`DATA_BUS]     cp0_write_data,
+  // exception signal
+  output                  delayslot_flag_out,
+  output                  next_inst_delayslot_flag,
+  output                  eret_flag,
+  output                  syscall_flag,
+  output                  break_flag
 );
 
   // extract information from instruction
@@ -55,6 +68,7 @@ module ID(
   assign shamt = inst_shamt;
   assign stall_request = load_related_1 || load_related_2;
   assign current_pc_addr = addr;
+  assign delayslot_flag_out = delayslot_flag_in;
 
   // generate address of registers
   RegGen reg_gen(
@@ -112,4 +126,26 @@ module ID(
     .mem_write_data     (mem_write_data)
   );
 
+  CP0Gen cp0_gen(
+    .inst               (inst),
+    .op                 (inst_op),
+    .rs                 (inst_rs),
+    .rd                 (inst_rd),
+    .reg_data_1         (reg_data_1),
+
+    .cp0_write_en       (cp0_write_en),
+    .cp0_read_en        (cp0_read_en),
+    .cp0_addr           (cp0_addr),
+    .cp0_write_data     (cp0_write_data)
+  );
+
+  ExceptionGen exception_gen(
+    .inst               (inst),
+    .op                 (inst_op),
+    .funct              (funct),
+    
+	  .eret_flag          (eret_flag),
+	  .syscall_flag       (syscall_flag),
+	  .break_flag         (break_flag)
+  );
 endmodule // ID

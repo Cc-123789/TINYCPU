@@ -5,6 +5,7 @@ module PipelineDeliver #(
 ) (
   input                     clk,
   input                     rst,
+  input                     flush,
   input                     stall_current_stage,
   input                     stall_next_stage,
   input       [WIDTH - 1:0] in,

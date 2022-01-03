@@ -1,3 +1,4 @@
+`include "bus.v"
 module HILO(
     input clk,
     input rst,
@@ -24,3 +25,5 @@ module HILO(
             lo <= lo_write_data;
         end
     end
+    
+endmodule
