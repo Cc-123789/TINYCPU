@@ -63,16 +63,19 @@ module ID(
   wire[`SHAMT_BUS]      inst_shamt  = inst[`SEG_SHAMT];
   wire[`FUNCT_BUS]      inst_funct  = inst[`SEG_FUNCT];
   wire[`HALF_DATA_BUS]  inst_imm    = inst[`SEG_IMM];
-
+  wire                  id_en;
   // generate output signals
   assign shamt = inst_shamt;
   assign stall_request = load_related_1 || load_related_2;
   assign current_pc_addr = addr;
   assign delayslot_flag_out = delayslot_flag_in;
-
+  assign id_en = ~delayslot_flag_in;
+  assign next_inst_delayslot_flag = branch_flag;
+  
   // generate address of registers
   RegGen reg_gen(
     .op             (inst_op),
+    .reg_en         (id_en),
     .rs             (inst_rs),
     .rt             (inst_rt),
     .rd             (inst_rd),
@@ -87,6 +90,7 @@ module ID(
   // generate FUNCT signal
   FunctGen funct_gen(
     .op       (inst_op),
+    .funct_en (id_en),
     .funct_in (inst_funct),
     .funct    (funct)
   );
@@ -94,6 +98,7 @@ module ID(
   // generate operands
   OperandGen operand_gen(
     .addr       (addr),
+    .operand_en (id_en),
     .op         (inst_op),
     .funct      (inst_funct),
     .imm        (inst_imm),
@@ -106,6 +111,7 @@ module ID(
   // generate branch address
   BranchGen branch_gen(
     .addr         (addr),
+    .branch_en    (id_en),
     .inst         (inst),
     .op           (inst_op),
     .funct        (inst_funct),
@@ -118,6 +124,7 @@ module ID(
   // generate memory accessing signals
   MemGen mem_gen(
     .op                 (inst_op),
+    .mem_en             (id_en),
     .reg_data_2         (reg_data_2),
     .mem_read_flag      (mem_read_flag),
     .mem_write_flag     (mem_write_flag),

@@ -6,6 +6,7 @@
 
 module BranchGen(
   input       [`ADDR_BUS]     addr,
+  input                       branch_en,
   input       [`INST_BUS]     inst,
   input       [`INST_OP_BUS]  op,
   input       [`FUNCT_BUS]    funct,
@@ -21,90 +22,96 @@ module BranchGen(
   wire[4:0] seg = inst [20:16];
 
   always @(*) begin
-    case (op)
-      `OP_JAL, `OP_J: begin
-        branch_flag <= 1;
-        branch_addr <= { addr_plus_4[31:28], jump_addr, 2'b00};
-      end
-      `OP_SPECIAL: begin
-        if ( funct == `FUNCT_JALR || funct == `FUNCT_JR ) begin
+    if (branch_en) begin
+      case (op)
+        `OP_JAL, `OP_J: begin
           branch_flag <= 1;
-          branch_addr <= reg_data_1;
+          branch_addr <= { addr_plus_4[31:28], jump_addr, 2'b00};
         end
-        else begin
-          branch_flag <= 0;
-          branch_addr <= 0;
-        end
-      end
-      `OP_BEQ: begin
-        if (reg_data_1 == reg_data_2) begin
-          branch_flag <= 1;
-          branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
-        end
-        else begin
-          branch_flag <= 0;
-          branch_addr <= 0;
-        end
-      end
-      `OP_BNE: begin
-        if (reg_data_1 != reg_data_2) begin
-          branch_flag <= 1;
-          branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
-        end
-        else begin
-          branch_flag <= 0;
-          branch_addr <= 0;
-        end
-      end
-      `OP_BGTZ: begin
-        if (reg_data_1 > reg_data_2) begin
-          branch_flag <= 1;
-          branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
-        end
-        else begin
-          branch_flag <= 0;
-          branch_addr <= 0;
-        end
-      end
-      `OP_BLEZ: begin
-        if (reg_data_1 <= reg_data_2) begin
-          branch_flag <= 1;
-          branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
-        end
-        else begin
-          branch_flag <= 0;
-          branch_addr <= 0;
-        end
-      end
-      `OP_REGIMM: begin
-        case(seg)
-          `FUNCT_BLTZ,`FUNCT_BLTZAL:begin
-            if (reg_data_1 < reg_data_2) begin
-              branch_flag <= 1;
-              branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
-            end
-            else begin
-              branch_flag <= 0;
-              branch_addr <= 0;
-            end       
+        `OP_SPECIAL: begin
+          if ( funct == `FUNCT_JALR || funct == `FUNCT_JR ) begin
+            branch_flag <= 1;
+            branch_addr <= reg_data_1;
           end
-          `FUNCT_BGEZ,`FUNCT_BGEZAL:begin       
-            if (reg_data_1 >= reg_data_2) begin
-              branch_flag <= 1;
-              branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
-            end
-            else begin
-              branch_flag <= 0;
-              branch_addr <= 0;
-            end     
+          else begin
+            branch_flag <= 0;
+            branch_addr <= 0;
           end
-        endcase
-      end
-      default: begin
-        branch_flag <= 0;
-        branch_addr <= 0;
-      end
-    endcase
+        end
+        `OP_BEQ: begin
+          if (reg_data_1 == reg_data_2) begin
+            branch_flag <= 1;
+            branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
+          end
+          else begin
+            branch_flag <= 0;
+            branch_addr <= 0;
+          end
+        end
+        `OP_BNE: begin
+          if (reg_data_1 != reg_data_2) begin
+            branch_flag <= 1;
+            branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
+          end
+          else begin
+            branch_flag <= 0;
+            branch_addr <= 0;
+          end
+        end
+        `OP_BGTZ: begin
+          if (reg_data_1 > reg_data_2) begin
+            branch_flag <= 1;
+            branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
+          end
+          else begin
+            branch_flag <= 0;
+            branch_addr <= 0;
+          end
+        end
+        `OP_BLEZ: begin
+          if (reg_data_1 <= reg_data_2) begin
+            branch_flag <= 1;
+            branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
+          end
+          else begin
+            branch_flag <= 0;
+            branch_addr <= 0;
+          end
+        end
+        `OP_REGIMM: begin
+          case(seg)
+            `FUNCT_BLTZ,`FUNCT_BLTZAL:begin
+              if (reg_data_1 < reg_data_2) begin
+                branch_flag <= 1;
+                branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
+              end
+              else begin
+                branch_flag <= 0;
+                branch_addr <= 0;
+              end       
+            end
+            `FUNCT_BGEZ,`FUNCT_BGEZAL:begin       
+              if (reg_data_1 >= reg_data_2) begin
+                branch_flag <= 1;
+                branch_addr <= addr_plus_4 + sign_ext_imm_sll2;
+              end
+              else begin
+                branch_flag <= 0;
+                branch_addr <= 0;
+              end     
+            end
+          endcase
+        end
+        default: begin
+          branch_flag <= 0;
+          branch_addr <= 0;
+        end
+      endcase
+    end
+    else begin
+      branch_flag <= 0;
+      branch_addr <= 0;      
+    end
   end
 
 endmodule // BranchGen

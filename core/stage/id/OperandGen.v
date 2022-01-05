@@ -7,6 +7,7 @@
 module OperandGen(
   input       [`ADDR_BUS]       addr,
   input       [`INST_OP_BUS]    op,
+  input                         operand_en,
   input       [`FUNCT_BUS]      funct,
   input       [`HALF_DATA_BUS]  imm,
   input       [`DATA_BUS]       reg_data_1,
@@ -24,35 +25,41 @@ module OperandGen(
 
   // generate operand_1
   always @(*) begin
-    case (op)
-      // immediate
-      `OP_ADDIU, `OP_ADDI,
-      `OP_ORI,`OP_LUI,
-      `OP_XORI,`OP_ANDI,
-      // memory accessing
-      `OP_LB,`OP_LH,`OP_LW,`OP_LBU,`OP_LHU,
-      `OP_SB,`OP_SH,`OP_SW,
-      `OP_LWL,`OP_LWR,`OP_SWL,`OP_SWR,
-      // branch
-      `OP_BNE,`OP_BEQ,`OP_BGTZ,`OP_BLEZ,`OP_REGIMM
-      :begin
-        operand_1 <= reg_data_1;
-      end
-      `OP_SPECIAL,`OP_SPECIAL2: begin
-        operand_1 <= funct == `FUNCT_JALR ? link_addr : reg_data_1;
-      end
-      `OP_JAL,`OP_J: begin
-        operand_1 <= link_addr;
-      end
-      default: begin
-        operand_1 <= 0;
-      end
-    endcase
+    if(operand_en) begin
+      case (op)
+        // immediate
+        `OP_ADDIU, `OP_ADDI,
+        `OP_ORI,`OP_LUI,
+        `OP_XORI,`OP_ANDI,
+        // memory accessing
+        `OP_LB,`OP_LH,`OP_LW,`OP_LBU,`OP_LHU,
+        `OP_SB,`OP_SH,`OP_SW,
+        `OP_LWL,`OP_LWR,`OP_SWL,`OP_SWR,
+        // branch
+        `OP_BNE,`OP_BEQ,`OP_BGTZ,`OP_BLEZ,`OP_REGIMM
+        :begin
+          operand_1 <= reg_data_1;
+        end
+        `OP_SPECIAL,`OP_SPECIAL2: begin
+          operand_1 <= funct == `FUNCT_JALR ? link_addr : reg_data_1;
+        end
+        `OP_JAL,`OP_J: begin
+          operand_1 <= link_addr;
+        end
+        default: begin
+          operand_1 <= 0;
+        end
+      endcase
+    end
+    else begin
+      operand_1 <= 0;
+    end  
   end
 
   // generate operand_2
   always @(*) begin
-    case (op)
+    if(operand_en) begin
+      case (op)
       `OP_LUI,`OP_ORI,
       `OP_XORI,
       `OP_ANDI
@@ -77,6 +84,11 @@ module OperandGen(
         operand_2 <= 0;
       end
     endcase
+    end
+    else begin
+      operand_2 <= 0;
+    end
+    
   end
 
 endmodule // OperandGen

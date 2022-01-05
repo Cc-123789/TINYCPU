@@ -66,8 +66,8 @@ module EX(
   wire mult_done , div_done;
   wire overflow_flag;
   wire add_en,mul_en,div_en,logic_en,hilo_en;
-  wire[`DOUBLE_DATA_BUS] mult_result,div_result;
-  wire[`DATA_BUS] adder_result,logic_reesult,hilo_result;
+  wire[`DOUBLE_DATA_BUS] mult_result,div_result,mult_div_result;
+  wire[`DATA_BUS] adder_result,logic_result,hilo_result;
   reg [4:0] select;
   
   // to ID stage

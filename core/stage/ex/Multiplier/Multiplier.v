@@ -6,7 +6,7 @@
   input                           mul_en,
   input       [`DATA_BUS]         op1,
   input       [`DATA_BUS]         op2,
-  output      reg                 done,
+  output                       done,
   output   [`DOUBLE_DATA_BUS]  result_mul  
  );
 
@@ -18,6 +18,12 @@ wire[`DATA_BUS] temp_op1;
 wire[`DATA_BUS] temp_op2;
 wire[`DATA_BUS_WIDTH-2:0] temp_sum;
 wire[`DOUBLE_DATA_BUS] temp_result;
+
+
+Done_gate done_gate(
+  .data_in(cout),
+  .done(done)
+);
 
 assign cout[0] = 0;
 assign temp_op1 = op1[`DATA_BUS_WIDTH-1] ? ~ op1 + 1 : op1;

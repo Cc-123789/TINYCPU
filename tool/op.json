@@ -2,7 +2,7 @@
     "and": {
         "op": "000000",
         "funt": "100100",
-        "shamt": "0",
+        "shamt": false,
         "ins_kind": "r",
         "zeros_reg": "000",
         "orders":"312"
@@ -10,7 +10,7 @@
     "or": {
         "op": "000000",
         "funt": "100101",
-        "shamt": "0",
+        "shamt": false,
         "ins_kind": "r",
         "zeros_reg": "000",
         "orders":"312"
@@ -18,7 +18,7 @@
     "xor": {
         "op": "000000",
         "funt": "100110",
-        "shamt": "0",
+        "shamt": false,
         "ins_kind": "r",
         "zeros_reg": "000",
         "orders":"312"
@@ -26,7 +26,7 @@
     "nor": {
         "op": "000000",
         "funt": "100111",
-        "shamt": "0",
+        "shamt": false,
         "ins_kind": "r",
         "zeros_reg": "000",
         "orders":"312"

@@ -106,13 +106,13 @@ class Translation():
                         string = self.__reg_dict[string]
 
                     # 把标号转为2进制,并加入
-                    result.append( "{:0>5b}".format( int(string) ) )   
+                    result.append( "{:0>5b}".format( int(string) ) )
                     i = i + 1
                 except IndexError:
                     print("该指令寄存器数量异常")
                     exit(-1)
             else:
-                result = result.append( "00000" )                        # 标志为1则为零号寄存器
+                result.append( "00000" )                        # 标志为1则为零号寄存器
 
         temp = [ None for _ in range(len(orders))]                       # 初始化一个空list
 
@@ -148,8 +148,23 @@ class Translation():
         # 寄存器译码
         result = result + self._reg_translation(segements,instruction_form['zeros_reg'],instruction_form['orders'])
 
+        flag = ""
+        if ( int ( segements[-1] ) > 0 ):
+            flag = "0"
+        else :
+            flag = "1"
+        num = int( segements[-1] ) & 0x7fffffff
+
+        num = bin(num)
+
+        if ( len(num) -2 >= 16) :
+            num = num[-16:-1] + num[-1]
+        else:
+            temp = flag * ( 18 - len(num))
+            num = temp + num[2:]
+
         #加入立即数
-        result = result + "{:0>16b}".format( int( segements[-1] ) )
+        result = result + num
 
         return result
 
@@ -168,8 +183,23 @@ class Translation():
         # 寄存器译码
         result = result + self._reg_translation(segements,instruction_form['zeros_reg'],instruction_form['orders'])
 
+        flag = ""
+        if ( int ( segements[-1] ) > 0 ):
+            flag = "0"
+        else :
+            flag = "1"
+        num = int( segements[-1] ) & 0x7fffffff
+
+        num = bin(num)
+
+        if ( len(num) -2 >= 16) :
+            num = num[-16:-1] + num[-1]
+        else:
+            temp = flag * ( 18 - len(num))
+            num = temp + num[2:]
+
         #加入偏移量
-        result = result + "{:0>16b}".format( int( segements[-1] ) ) 
+        result = result + num
 
         return result
 
@@ -199,7 +229,7 @@ class Translation():
         # 基址寄存器译码
         base = re.search(r'\(.*\)',segements[-1]).group()                       # 寻找基址寄存器
         base = re.sub(r'\((.*)\)',r'\1',base)                                   # 去掉小括号
-        base = self._reg_translation([base],"0")                                # 基址寄存器译码
+        base = self._reg_translation([base],"0","1")                            # 基址寄存器译码
         result = result + base
 
         # 加入寄存器
@@ -207,7 +237,23 @@ class Translation():
 
         #加入偏移量
         segements[-1] = re.sub(r'\(.*\)',r'',segements[-1] )
-        result = result + "{:0>16b}".format( int( segements[-1] ) ) 
+
+        flag = ""
+        if ( int ( segements[-1] ) >= 0 ):
+            flag = "0"
+        else :
+            flag = "1"
+        num = int( segements[-1] ) & 0x7fffffff
+
+        num = bin(num)
+
+        if ( len(num) -2 >= 16) :
+            num = num[-16:-1] + num[-1]
+        else:
+            temp = flag * ( 18 - len(num))
+            num = temp + num[2:]
+
+        result = result + num
 
         return result
 

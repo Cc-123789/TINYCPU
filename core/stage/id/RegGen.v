@@ -6,6 +6,7 @@
 
 module RegGen(
   input       [`INST_OP_BUS]  op,
+  input                       reg_en,
   input       [`REG_ADDR_BUS] rs,
   input       [`REG_ADDR_BUS] rt,
   input       [`REG_ADDR_BUS] rd,
@@ -19,7 +20,8 @@ module RegGen(
 
   // generate read address
   always @(*) begin
-    case (op)
+    if (reg_en) begin
+      case (op)
       // arithmetic & logic (immediate)
       `OP_ADDIU,`OP_ADDI,
       `OP_LUI,`OP_ORI,
@@ -51,10 +53,20 @@ module RegGen(
       end
     endcase
   end
+    else begin
+        reg_read_en_1 <= 0;
+        reg_read_en_2 <= 0;
+        reg_addr_1 <= 0;
+        reg_addr_2 <= 0;
+    end
+
+ 
+  end
 
   // generate write address
   always @(*) begin
-    case (op)
+    if(reg_en) begin
+      case (op)
       // immediate
       `OP_ADDIU, `OP_ADDI,
       `OP_LUI,`OP_ORI,
@@ -87,6 +99,12 @@ module RegGen(
         reg_write_addr <= 0;
       end
     endcase
+    end
+    else begin
+        reg_write_en <= 0;
+        reg_write_addr <= 0;
+    end
+ 
   end
 
 endmodule // RegGen

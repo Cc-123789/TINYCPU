@@ -56,6 +56,7 @@ module Core(
   IFID ifid(
     .clk                  (clk),
     .rst                  (rst),
+    .flush                (flush),
     .stall_current_stage  (stall_if_conn),
     .stall_next_stage     (stall_id_conn),
 
@@ -158,7 +159,7 @@ module Core(
     .operand_2_in                 (id_operand_2),
     .mem_read_flag_in             (id_mem_read_flag),
     .mem_write_flag_in            (id_mem_write_flag),
-    .mem_sign_ext_flag_in         (id_mem_sign_ext_flag),
+    .mem_sign_ext_flag_in         (id_mem_sign_flag),
     .mem_sel_in                   (id_mem_sel),
     .mem_write_data_in            (id_mem_write_data),
     .reg_write_en_in              (id_reg_write_en),
@@ -181,7 +182,7 @@ module Core(
     .operand_2_out                (idex_operand_2),
     .mem_read_flag_out            (idex_mem_read_flag),
     .mem_write_flag_out           (idex_mem_write_flag),
-    .mem_sign_ext_flag_out        (idex_mem_sign_ext_flag),
+    .mem_sign_ext_flag_out        (idex_mem_sign_flag),
     .mem_sel_out                  (idex_mem_sel),
     .mem_write_data_out           (idex_mem_write_data),
     .reg_write_en_out             (idex_reg_write_en),
@@ -285,6 +286,7 @@ module Core(
   EXMEM exmem(
     .clk                    (clk),
     .rst                    (rst),
+    .flush                  (flush),
     .stall_current_stage    (stall_ex_conn),
     .stall_next_stage       (stall_mem_conn),
 
@@ -452,7 +454,7 @@ module Core(
   wire[`DATA_BUS] wb_result;
   wire wb_reg_write_en;
   wire[`REG_ADDR_BUS] wb_reg_write_addr;
-  wire to_hi_write_data,to_lo_write_data;
+  wire[`DATA_BUS] to_hi_write_data,to_lo_write_data;
   wire to_hilo_write_en;
 
   assign debug_reg_write_addr = wb_reg_write_addr;

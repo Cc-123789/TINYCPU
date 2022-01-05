@@ -20,7 +20,8 @@ module RegFile(
 );
 
   reg[`DATA_BUS] registers[0:31];
-  //reg[`DATA_BUS] reg_flag;
+  wire forward_flag;
+  assign forward_flag = ( write_addr != 0 );
  
   integer i;
 
@@ -32,7 +33,7 @@ module RegFile(
         //reg_flag <= 0;
       end
     end
-    else if (write_en && |write_addr && write_addr!=5'b11000) begin
+    else if ( write_en && |write_addr && write_addr!=5'b11000) begin
       registers[write_addr] <= write_data;
     end
   end
@@ -42,10 +43,10 @@ module RegFile(
     if (rst) begin
       read_data_1 <= 0;
     end
-    // else if (read_addr_1 == write_addr && write_en && read_en_1) begin
-    //   // forward data to output
-    //   read_data_1 <= write_data;
-    // end
+    else if (read_addr_1 == write_addr && write_en && read_en_1 && forward_flag) begin
+      // forward data to output
+      read_data_1 <= write_data;
+    end
     else if (read_en_1) begin
       read_data_1 <= registers[read_addr_1];
     end
@@ -59,10 +60,10 @@ module RegFile(
     if (rst) begin
       read_data_2 <= 0;
     end
-    // else if (read_addr_2 == write_addr && write_en && read_en_2) begin
-    //   // forward data to output
-    //   read_data_2 <= write_data;
-    // end
+    else if (read_addr_2 == write_addr && write_en && read_en_2 && forward_flag) begin
+      // forward data to output
+      read_data_2 <= write_data;
+    end
     else if (read_en_2) begin
       read_data_2 <= registers[read_addr_2];
     end
