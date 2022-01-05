@@ -25,7 +25,6 @@ module EX(
   input       [`REG_ADDR_BUS]     reg_write_addr_in,
   input       [`ADDR_BUS]         current_pc_addr_in,
 
-  input                           mult_div_done,
   output                          stall_request,
   // cp0 signal
   input                           cp0_write_en_in,
@@ -68,6 +67,7 @@ module EX(
   wire add_en,mul_en,div_en,logic_en,hilo_en;
   wire[`DOUBLE_DATA_BUS] mult_result,div_result,mult_div_result;
   wire[`DATA_BUS] adder_result,logic_result,hilo_result;
+  wire mult_div_done;
   reg [4:0] select;
   
   // to ID stage

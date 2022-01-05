@@ -52,7 +52,8 @@ module ID(
   output                  next_inst_delayslot_flag,
   output                  eret_flag,
   output                  syscall_flag,
-  output                  break_flag
+  output                  break_flag,
+  output                  zero_flag
 );
 
   // extract information from instruction
@@ -150,9 +151,10 @@ module ID(
     .inst               (inst),
     .op                 (inst_op),
     .funct              (funct),
-    
+    .operand_2          (operand_2),
 	  .eret_flag          (eret_flag),
 	  .syscall_flag       (syscall_flag),
-	  .break_flag         (break_flag)
+	  .break_flag         (break_flag),
+    .zero_flag          (zero_flag )
   );
 endmodule // ID

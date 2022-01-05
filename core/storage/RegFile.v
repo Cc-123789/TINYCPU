@@ -19,7 +19,7 @@ module RegFile(
   input       [`DATA_BUS]     write_data
 );
 
-  reg[`DATA_BUS] registers[0:31];
+  (*dont_touch = "true"*) reg[`DATA_BUS] registers[0:31];
   wire forward_flag;
   assign forward_flag = ( write_addr != 0 );
  

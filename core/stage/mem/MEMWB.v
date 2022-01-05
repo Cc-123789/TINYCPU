@@ -33,7 +33,7 @@ module MEMWB(
   output                  mem_read_flag_out,
   output                  mem_write_flag_out,
   output                  mem_sign_flag_out,
-  output  [`MEM_SEL_BUS]  mem_sel_out,
+  (*dont_touch = "true"*) output  [`MEM_SEL_BUS]  mem_sel_out,
   // regfile
   output  [`DATA_BUS]     result_out,
   output                  reg_write_en_out,

@@ -2,9 +2,9 @@
 
 `include "bus.v"
 module Core(
-  input clk,
-  input rst,
-  input stall,
+  input                   clk,
+  input                   rst,
+  input                   stall,
   // ROM control
   output  [`MEM_SEL_BUS]  rom_write_en,
   output  [`ADDR_BUS]     rom_addr,
@@ -88,10 +88,10 @@ module Core(
 
   wire  id_delayslot_flag_in, id_delayslot_flag_out, id_next_inst_delayslot_flag,
         id_cp0_write_en, id_cp0_read_en, 
-        id_eret_flag, id_syscall_flag, id_break_flag;
+        id_eret_flag, id_syscall_flag, id_break_flag,id_zero_flag ;
   wire [`DATA_BUS] id_cp0_write_data;
   wire [`CP0_ADDR_BUS] id_cp0_addr;
-
+  
   ID id_stage(
     .addr               (ifid_addr),
     .inst               (ifid_inst),
@@ -138,7 +138,8 @@ module Core(
     .next_inst_delayslot_flag (id_next_inst_delayslot_flag),
     .eret_flag                (id_eret_flag),
     .syscall_flag             (id_syscall_flag),
-    .break_flag               (id_break_flag)  
+    .break_flag               (id_break_flag),
+    .zero_flag                (id_zero_flag)
   );
 
   wire  idex_cp0_write_en, idex_cp0_read_en, idex_eret_flag, idex_syscall_flag, 
@@ -457,6 +458,10 @@ module Core(
   wire[`DATA_BUS] to_hi_write_data,to_lo_write_data;
   wire to_hilo_write_en;
 
+  wire wb_cp0_write_en;
+  wire [`DATA_BUS] wb_cp0_write_data;
+  wire [`CP0_ADDR_BUS] wb_cp0_addr;
+
   assign debug_reg_write_addr = wb_reg_write_addr;
   assign debug_reg_write_data = wb_result;
 
@@ -486,7 +491,15 @@ module Core(
 
     .hi_write_data_out  (to_hi_write_data),
     .lo_write_data_out  (to_lo_write_data),
-    .hilo_write_en_out  (to_hilo_write_en)
+    .hilo_write_en_out  (to_hilo_write_en),
+
+    .cp0_write_en_in    (memwb_cp0_write_en),
+    .cp0_write_data_in  (memwb_cp0_write_data),
+    .cp0_addr_in        (memwb_cp0_addr),
+
+    .cp0_write_en_out    (wb_cp0_write_en),
+    .cp0_write_data_out  (wb_cp0_write_data),
+    .cp0_addr_out        (wb_cp0_addr)
   );
 
 
@@ -566,10 +579,10 @@ module Core(
   CP0 u_CP0 (
     .clk                (clk),
     .rst                (rst),
-    .cp0_write_en       (memwb_cp0_write_en),
+    .cp0_write_en       (wb_cp0_write_en),
     .cp0_read_addr      (id_cp0_addr),
-    .cp0_write_addr     (memwb_cp0_addr),
-    .cp0_write_data     (memwb_cp0_write_data),
+    .cp0_write_addr     (wb_cp0_addr),
+    .cp0_write_data     (wb_cp0_write_data),
     .eret_flag          (exmem_eret_flag),
     .syscall_flag       (exmem_syscall_flag),
     .break_flag         (exmem_break_flag),
@@ -611,7 +624,14 @@ module Core(
     .stall_id         (stall_id_conn),
     .stall_ex         (stall_ex_conn),
     .stall_mem        (stall_mem_conn),
-    .stall_wb         (stall_wb_conn)
+    .stall_wb         (stall_wb_conn),
+    .cp0_epc          (cp0_rp_epc),
+    .eret_flag        (id_eret_flag),
+    .syscall_flag     (id_syscall_flag),
+    .break_flag       (id_break_flag),
+    .zero_flag        (id_zero_flag),
+    .flush            (flush),
+    .exc_pc           (exc_pc)
   );
 
 

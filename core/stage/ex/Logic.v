@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 `include "bus.v"
 `include "funct.v"
 
@@ -36,6 +37,7 @@ module Logic (
             `FUNCT_SLLV: result <= operand_2 << operand_1[4:0];
             `FUNCT_SRLV: result <= operand_2 >> operand_1[4:0];
             `FUNCT_SRAV: result <= ({32{operand_2[31]}} << (6'd32 - {1'b0, operand_1[4:0]})) | operand_2 >> operand_1[4:0];
+            default : result <= 0;
         endcase
     end
     else begin

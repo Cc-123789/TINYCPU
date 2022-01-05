@@ -115,6 +115,9 @@ module MEM(
         ram_write_sel <= 4'b0000;
       end
     end
+    else begin
+        ram_write_sel <= 4'b0000;      
+    end
   end
 
   // generate ram_write_data signal
@@ -144,6 +147,9 @@ module MEM(
       else begin
         ram_write_data <= 0;
       end
+    end
+    else begin
+        ram_write_data <= 0;      
     end
   end
 

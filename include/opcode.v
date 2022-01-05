@@ -42,7 +42,7 @@
 `define OP_SB         6'b101000
 `define OP_SH         6'b101001
 `define OP_SW         6'b101011
-`define OP_LWL        6'b100001
+`define OP_LWL        6'b100010
 `define OP_LWR        6'b100110
 `define OP_SWL        6'b101010
 `define OP_SWR        6'b101110

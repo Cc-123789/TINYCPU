@@ -20,9 +20,9 @@ module WB(
   input       [`DATA_BUS]     lo_write_data_in,
   input                       hilo_write_en_in,
   // cp0
-  // input                       cp0_write_en_in,
-  // input       [`DATA_BUS]     cp0_write_data_in,
-  // input       [`CP0_ADDR_BUS] cp0_addr_in,
+  input                       cp0_write_en_in,
+  input       [`DATA_BUS]     cp0_write_data_in,
+  input       [`CP0_ADDR_BUS] cp0_addr_in,
   // regfile control
   output  reg [`DATA_BUS]     result_out,
   output                      reg_write_en_out,
@@ -33,11 +33,11 @@ module WB(
   //HILO
   output      [`DATA_BUS]     hi_write_data_out,
   output      [`DATA_BUS]     lo_write_data_out,
-  output                      hilo_write_en_out
+  output                      hilo_write_en_out,
   // cp0
-  // output                      cp0_write_en_out,
-  // output      [`DATA_BUS]     cp0_write_data_out,
-  // output      [`CP0_ADDR_BUS] cp0_addr_out
+  output                      cp0_write_en_out,
+  output      [`DATA_BUS]     cp0_write_data_out,
+  output      [`CP0_ADDR_BUS] cp0_addr_out
 );
 
   assign reg_write_en_out = reg_write_en_in;
@@ -49,9 +49,9 @@ module WB(
   assign lo_write_data_out = lo_write_data_in;
   assign hilo_write_en_out = hilo_write_en_in;
   
-  // assign cp0_write_en_out = cp0_write_en_in;
-  // assign cp0_write_data_out = cp0_write_data_in;
-  // assign cp0_addr_out = cp0_addr_in;
+  assign cp0_write_en_out = cp0_write_en_in;
+  assign cp0_write_data_out = cp0_write_data_in;
+  assign cp0_addr_out = cp0_addr_in;
 
   wire[`ADDR_BUS] address = result_in;
 
@@ -65,12 +65,14 @@ module WB(
           2'b01: result_out <= mem_sign_flag ? {{24{ram_read_data[15]}}, ram_read_data[15:8]} : {24'b0, ram_read_data[15:8]};
           2'b10: result_out <= mem_sign_flag ? {{24{ram_read_data[23]}}, ram_read_data[23:16]} : {24'b0, ram_read_data[23:16]};
           2'b11: result_out <= mem_sign_flag ? {{24{ram_read_data[31]}}, ram_read_data[31:24]} : {24'b0, ram_read_data[31:24]};
+          default: result_out <= 0;
         endcase
       end
       else if (mem_sel == 4'b0011) begin
         case (address[1:0])
           2'b00: result_out <= mem_sign_flag ? {{16{ram_read_data[15]}}, ram_read_data[15:0]} : {16'b0, ram_read_data[15:0]};
           2'b10: result_out <= mem_sign_flag ? {{16{ram_read_data[31]}}, ram_read_data[31:16]} : {16'b0, ram_read_data[31:16]};
+          default: result_out <= 0;          
         endcase
       end
       else if (mem_sel == 4'b1111) begin

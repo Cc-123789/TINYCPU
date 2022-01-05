@@ -4,17 +4,27 @@
 
 module PipelineController(
   // stall request signals
-  input   request_from_id,
-  input   request_from_ex,
+  input                     request_from_id,
+  input                     request_from_ex,
   // stall whole pipeline
-  input   stall_all,
+  input                     stall_all,
+  // exception signals
+  input     [`DATA_BUS]     cp0_epc,
+  input                     eret_flag,
+  input                     syscall_flag,
+  input                     break_flag,
+  input                     zero_flag,
+
   // stall signals for each mid-stage
-  output  stall_pc,
-  output  stall_if,
-  output  stall_id,
-  output  stall_ex,
-  output  stall_mem,
-  output  stall_wb
+  output                    stall_pc,
+  output                    stall_if,
+  output                    stall_id,
+  output                    stall_ex,
+  output                    stall_mem,
+  output                    stall_wb,
+  // exception handle signals
+  output                    flush,
+  output  reg [`ADDR_BUS]   exc_pc
 );
 
   reg[5:0] stall;
@@ -27,7 +37,7 @@ module PipelineController(
     if (stall_all) begin
       stall <= 6'b111111;
     end
-    else if (request_from_id ) begin
+    else if (request_from_id) begin
       stall <= 6'b000111;
     end
     else if (request_from_ex) begin
@@ -35,6 +45,20 @@ module PipelineController(
     end
     else begin
       stall <= 6'b000000;
+    end
+  end
+
+  assign flush = stall_all ? 0 : (eret_flag || syscall_flag || break_flag || zero_flag) ;
+
+  always @(*) begin
+    if (eret_flag) begin
+      exc_pc <= cp0_epc;
+    end
+    else if (syscall_flag || break_flag) begin
+      exc_pc <= 32'hbfc0_0380;
+    end
+    else begin
+      exc_pc <= 32'hbfc0_0000;
     end
   end
 

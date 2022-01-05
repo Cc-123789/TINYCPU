@@ -26,11 +26,11 @@ module CP0(
     output      [`DATA_BUS]     epc_o
 );
 
-    reg[`DATA_BUS] reg_badvaddr;
-    reg[ 32 : 0]   reg_count;
-    reg[`DATA_BUS] reg_status;
-    reg[`DATA_BUS] reg_cause;
-    reg[`DATA_BUS] reg_epc;
+    (*dont_touch = "true"*) reg[`DATA_BUS] reg_badvaddr;
+    (*dont_touch = "true"*) reg[ 32 : 0]   reg_count;
+    (*dont_touch = "true"*) reg[`DATA_BUS] reg_status;
+    (*dont_touch = "true"*) reg[`DATA_BUS] reg_cause;
+    (*dont_touch = "true"*) reg[`DATA_BUS] reg_epc;
 
     wire [`ADDR_BUS] exc_epc;
 

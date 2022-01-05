@@ -93,6 +93,10 @@ module RegGen(
           reg_write_en <= 1;
           reg_write_addr <= 31;   // $ra (return address)          
         end
+        else begin
+          reg_write_en <= 0;
+          reg_write_addr <= 0;           
+        end
       end
       default: begin
         reg_write_en <= 0;

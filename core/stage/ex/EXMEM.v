@@ -35,7 +35,7 @@ module EXMEM(
   output                  mem_read_flag_out,
   output                  mem_write_flag_out,
   output                  mem_sign_flag_out,
-  output  [`MEM_SEL_BUS]  mem_sel_out,
+  (*dont_touch = "true"*) output  [`MEM_SEL_BUS]  mem_sel_out,
   output  [`DATA_BUS]     mem_write_data_out,
   // output to WB stage
   output  [`DATA_BUS]     result_out,

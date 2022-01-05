@@ -10,7 +10,7 @@ module Divider (
 );
 
 wire[`DATA_BUS]                     op1[`DATA_BUS];
-wire[`DATA_BUS]                     op2[`DATA_BUS];
+wire[`DATA_BUS]                     op2[`DATA_BUS_WIDTH:0];
 wire[`DATA_BUS]                     cout;
 wire[`DATA_BUS]                     add_sub_en_link;
 wire[`DATA_BUS]                     quo;

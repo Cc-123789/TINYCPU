@@ -1,3 +1,4 @@
+`timescale 1ns / 1ps
 `include "bus.v"
 
 module Mux(
@@ -13,11 +14,26 @@ module Mux(
 
     always @(*) begin
         case( select )
-            5'b00001 : result <= adder_result;
-            5'b00010 : mult_div_result <= mult_result;
-            5'b00100 : mult_div_result <= div_result;
-            5'b01000 : result <= logic_reesult;
-            5'b10000 : result <= hilo_result;
+            5'b00001 : begin
+               result <= adder_result;
+               mult_div_result <= 0;                               
+            end
+            5'b00010 : begin
+                result <= 0;
+                mult_div_result <= mult_result;                
+            end
+            5'b00100 : begin
+                result <= 0;
+                mult_div_result <= div_result;                
+            end
+            5'b01000 : begin
+                result <= logic_reesult;
+                mult_div_result <= 0;                
+            end
+            5'b10000 : begin
+                result <= hilo_result;
+                mult_div_result <= 0;
+            end
             default : begin
                 result <= 0;
                 mult_div_result <= 0;

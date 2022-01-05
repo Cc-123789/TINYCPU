@@ -1,12 +1,13 @@
+`timescale 1ns / 1ps
 `include "bus.v"
 
 module HILOReadProxy(
     input [`DATA_BUS] hi_input_data,
     input [`DATA_BUS] lo_input_data,
-    input [`DATA_BUS] mem_hilo_write_en,
+    input             mem_hilo_write_en,
     input [`DATA_BUS] mem_hi_write_data,
     input [`DATA_BUS] mem_lo_write_data,
-    input wb_hilo_write_en,
+    input             wb_hilo_write_en,
     input [`DATA_BUS] wb_hi_write_data,
     input [`DATA_BUS] wb_lo_write_data,
     output [`DATA_BUS] hi_output_data,

@@ -100,6 +100,10 @@ module BranchGen(
                 branch_addr <= 0;
               end     
             end
+            default: begin
+                branch_flag <= 0;
+                branch_addr <= 0;
+            end
           endcase
         end
         default: begin
