@@ -27,9 +27,7 @@ module WB(
   output  reg [`DATA_BUS]     result_out,
   output                      reg_write_en_out,
   output      [`REG_ADDR_BUS] reg_write_addr_out,
-  // debug signals
-  output                      debug_reg_write_en,
-  output      [`ADDR_BUS]     debug_pc_addr_out,
+
   //HILO
   output      [`DATA_BUS]     hi_write_data_out,
   output      [`DATA_BUS]     lo_write_data_out,
@@ -42,9 +40,6 @@ module WB(
 
   assign reg_write_en_out = reg_write_en_in;
   assign reg_write_addr_out = reg_write_addr_in;
-  assign debug_reg_write_en = reg_write_en_out;
-  assign debug_pc_addr_out = current_pc_addr_in;
-
   assign hi_write_data_out = hi_write_data_in;
   assign lo_write_data_out = lo_write_data_in;
   assign hilo_write_en_out = hilo_write_en_in;

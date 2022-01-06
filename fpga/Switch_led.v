@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2017/07/16 17:23:43
+// Create Date: 01/06/2022 02:32:00 AM
 // Design Name: 
-// Module Name: flash_led_ctl
+// Module Name: Switch_led
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -33,4 +33,3 @@ module Switch_led(
 	    else
 		   led = switch;
 endmodule
-

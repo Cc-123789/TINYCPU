@@ -16,13 +16,26 @@ module Core(
   output  [`ADDR_BUS]     ram_addr,
   input   [`DATA_BUS]     ram_read_data,
   output  [`DATA_BUS]     ram_write_data,
-  // debug signals
-  output                  debug_reg_write_en,
-  output  [`REG_ADDR_BUS] debug_reg_write_addr,
-  output  [`DATA_BUS]     debug_reg_write_data,
-  output  [`ADDR_BUS]     debug_pc_addr
+
+  //
+  output [`DATA_BUS]      debug_pc,
+  output [`DATA_BUS]      debug_operand_1,
+  output [`DATA_BUS]      debug_operand_2,
+  output [`DATA_BUS]      debug_branch_addr,
+  output [`DATA_BUS]      debug_wb_result,
+  output [`DATA_BUS]      debug_hi_read_data,
+  output [`DATA_BUS]      debug_lo_read_data,
+  output [`DATA_BUS]      debug_ifid_inst  
 );
 
+  assign debug_pc = pc_pc;
+  assign debug_operand_1 = id_operand_1;
+  assign debug_operand_2 = id_operand_2;
+  assign debug_branch_addr = pc_branch_addr;
+  assign debug_wb_result = wb_result;
+  assign debug_hi_read_data = hi_read_data;
+  assign debug_lo_read_data = lo_read_data;
+  assign debug_ifid_inst = rom_read_data;
 
   // stall signals
   wire stall_pc_conn, stall_if_conn, stall_id_conn,
@@ -462,8 +475,6 @@ module Core(
   wire [`DATA_BUS] wb_cp0_write_data;
   wire [`CP0_ADDR_BUS] wb_cp0_addr;
 
-  assign debug_reg_write_addr = wb_reg_write_addr;
-  assign debug_reg_write_data = wb_result;
 
   WB wb_stage(
     .ram_read_data      (memwb_ram_read_data),
@@ -486,8 +497,6 @@ module Core(
     .reg_write_en_out   (wb_reg_write_en),
     .reg_write_addr_out (wb_reg_write_addr),
 
-    .debug_reg_write_en (debug_reg_write_en),
-    .debug_pc_addr_out  (debug_pc_addr),
 
     .hi_write_data_out  (to_hi_write_data),
     .lo_write_data_out  (to_lo_write_data),
