@@ -6,17 +6,31 @@ module testbench;
     reg[7:0] switch;
     wire[7:0] seg_code_0,seg_code_1,pos;
     initial begin
-        clk <= 1'b0;
-        rst <= 1'b0;
+        clk <= 1'b1;
+        rst <= 1'b1;
         btn <= 5'b00000;
-        #20 rst = 1'b1;
+        #1 rst = 1'b0;
         btn <= 5'b00010;
-        #20 
+        #2 
         btn <= 5'b00000;
-        #20 
+        #2 
         btn <= 5'b00010;
+        #2 
+        btn <= 5'b00000;
+        #2 
+        btn <= 5'b00010;
+        #2 
+        btn <= 5'b00000;
+        #2 
+        btn <= 5'b00010;
+        #2 
+        btn <= 5'b00000;
+        #2 
+        btn <= 5'b00010;
+        #2 
+        btn <= 5'b00000;
     end
-    always #5 clk <= ~clk;   
+    always #1 clk <= ~clk;   
 
     Mycpu_top mycpu_top(
         .clk  (clk),
